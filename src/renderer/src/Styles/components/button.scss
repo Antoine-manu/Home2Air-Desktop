@@ -1,0 +1,49 @@
+.btn{
+    padding: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-radius: 24px;
+
+    &-primary{
+        background-color: $blue;
+        color: white;
+    }
+    &-danger{
+        background-color: $red;
+        color: white;
+    }
+    &-info{
+        background-color: $yellow;
+        color: white;
+    }
+    &-success{
+        background-color: $green;
+        color: white;
+    }
+
+    &-outlined{
+        
+        border: solid 2px;
+        padding: 8px;
+        padding-left: 16px;
+        padding-right: 16px;
+        border-radius: 24px;
+
+        &-primary{
+            border-color: $blue;
+            color: $blue;
+        }
+        &-danger{
+            border-color: $red;
+            color: $red;
+        }
+        &-info{
+            border-color: $yellow;
+            color: $yellow;
+        }
+        &-success{
+            border-color: $green;
+            color: $green;
+        }
+    }
+}

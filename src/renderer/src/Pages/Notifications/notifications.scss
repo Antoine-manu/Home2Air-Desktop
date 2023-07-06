@@ -1,0 +1,40 @@
+@import '../../Styles/colors.scss';
+.profil{
+
+    width: 90%;
+
+    &__form{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    &__img{
+        height: 27%;
+        align-self: center;
+        
+
+        &>img{
+            height: 100%;
+        }
+    }
+}
+
+.form-layout-mid{
+    width: 48%;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: $box-shadow;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &__top{
+        margin-top: 8px;
+        margin-bottom: 8px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border-bottom: solid 3px $lightgrey;
+    }
+}

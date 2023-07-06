@@ -1,0 +1,12 @@
+.text{
+
+    &-danger{
+        color: $red !important;
+    }
+    &-success{
+        color: $green !important;
+    }
+    &-info{
+        color: $yellow !important;
+    }
+}

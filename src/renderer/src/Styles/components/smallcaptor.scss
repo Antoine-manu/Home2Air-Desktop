@@ -1,0 +1,36 @@
+.captorcard{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-shadow: $box-shadow;
+    width: 300px;
+    padding: 16px;
+    height: 100px;
+    border-radius: 16px;
+
+    &__right{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 65%;
+        &__titles{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            
+            &>p{
+                margin: 0;
+            }
+
+            &__title{
+                font-weight: bold;
+            }
+        }
+
+        &__button{
+            display: flex;
+            flex-direction: row;
+            justify-content:end ;
+        }
+    }
+}

@@ -1,0 +1,18 @@
+.datatable{
+
+    &_top{
+        
+        &>input{
+            width: 70% !important;
+        }
+        &>div{
+            width: 20%;
+            align-items: center;
+
+            &>select{
+                margin-left: 8px;
+                width: 50%;
+            }
+        }
+    }
+}
