@@ -16,10 +16,6 @@ function App() {
     }
   };
 
-  ```git remote add origin https://github.com/Antoine-manu/Home2Air-Desktop.git
-git branch -M main
-git push -u origin main`````;
-  
   return <React.StrictMode>{!isConnected ? <Login /> : <Home />}</React.StrictMode>;
 }
 

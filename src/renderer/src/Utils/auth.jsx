@@ -1,11 +1,6 @@
 import param from '../../config';
 
 const HOST = param;
-// const Store = require('electron-store');
-// import Store from 'electron-store';
-// const store = new Store();
-// const crypto = require('crypto');
-// const ENCRYPTION_KEY = generateEncryptionKey();
 
 const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
   if (window && window.require) {
@@ -14,7 +9,7 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
       url: resource,
       ...options
     });
-
+    
     let didTimeOut = false;
     const timer = setTimeout(() => {
       didTimeOut = true;
@@ -33,7 +28,7 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
             response.on('data', (chunk) => {
               data.push(chunk);
             });
-
+            
             response.on('end', () => {
               resolve(
                 new Response(Buffer.concat(data).toString(), {
@@ -47,7 +42,7 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
             reject(new Error(`Request failed with status code ${response.statusCode}`));
           }
         }
-
+        
         response.on('error', (error) => {
           reject(new Error(`Error with the response: ${error.message}`));
         });
@@ -55,7 +50,7 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
 
       request.on('error', (error) => {
         clearTimeout(timer);
-
+        
         if (!didTimeOut) {
           reject(new Error(`Error with the request: ${error.message}`));
         }
@@ -81,6 +76,8 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
 };
 
 export async function fetchRoute(route, method, params, token = '') {
+  console.log('route, method, params, token', route, method, params, token);
+
   const url = new URL(route, HOST);
   const headers = {
     Accept: 'application/json',
@@ -107,7 +104,9 @@ export async function fetchRoute(route, method, params, token = '') {
     headers,
     body
   };
+
   try {
+    console.log('fetchOptions', fetchOptions);
     const response = await fetchWithTimeout(url.toString(), fetchOptions);
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -119,29 +118,11 @@ export async function fetchRoute(route, method, params, token = '') {
       }
       throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
     }
-    // const json = await response.json();
-
-    return await response.json();
+    const json = await response.json();
+    console.log('json', json);
+    return json;
   } catch (error) {
     console.error('Error while fetching:', error.message);
     throw error;
   }
-}
-
-function decrypt(text) {
-  let textParts = text.split(':');
-  let iv = Buffer.from(textParts.shift(), 'hex');
-  let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-  let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-  let decrypted = decipher.update(encryptedText);
-
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-  return decrypted.toString();
-}
-
-export async function fetchFromStorage(key) {
-  const encryptedData = store.get(key);
-  if (!encryptedData) return null;
-  return decrypt(encryptedData);
 }

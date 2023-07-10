@@ -1,27 +1,35 @@
-import Circular from './CircularProgress'
-import { Button } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-export default function SmallCaptor({datas}) {
-    console.log(datas)
-    
-    return (
-        <>
-            <div className='captorcard'>
-                <div className='captorcard__left'>
-                    <Circular percent={datas.percent}/>
-                </div>
-                <div className='captorcard__right'>
-                    <div className='captorcard__right__titles'>
-                        <p className='captorcard__right__titles__title'>Title</p>
-                        <p><FontAwesomeIcon icon="fa-solid fa-gear"/></p>
-                    </div>
-                    <div className='captorcard__right__button'>
-                        <NavLink to={'/sensor/' + datas.id} className='btn btn-primary'>Voir</NavLink>
-                    </div>
-                </div>
+export default function SmallCaptor({ datas }) {
+  console.log(datas);
+  return (
+    <>
+      <div>
+        <div key={datas.id}>
+          <div>
+            <h3>{datas.name}</h3>
+            <div>
+              <div key={datas.id}>
+                <h4>
+                  <Link
+                    to="/SingleSensor"
+                    state={{
+                      datas: JSON.stringify(datas)
+                    }}
+                  >
+                    {datas.name}
+                  </Link>
+                </h4>
+              </div>
             </div>
-        </>
-    )
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
+
+SmallCaptor.propTypes = {
+  datas: PropTypes.object.isRequired
+};

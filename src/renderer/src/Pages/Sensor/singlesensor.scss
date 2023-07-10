@@ -1,0 +1,137 @@
+@import "../../Styles/colors.scss";
+
+.singlesensor {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &__titles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &>span {
+      color: $darkgrey;
+    }
+
+    &>h1 {
+      margin: 0;
+    }
+  }
+
+  &__circular {
+    margin-top: 3%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+
+    &__circularprogress {
+
+      &>span {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      &>div {
+        display: flex;
+        flex-direction: column;
+        left: 115px;
+        top: 70px;
+
+        &>p {
+          font-size: 100px;
+          font-weight: bold;
+          margin: 0;
+        }
+
+        &>span {
+          font-weight: 100;
+          font-size: 16px;
+        }
+      }
+
+      &__span {
+
+        &__qualityName {
+          font-size: 22px !important;
+        }
+
+        &>span:nth-child(2) {
+          color: blue !important;
+        }
+      }
+    }
+  }
+
+  &__badges {
+    display: flex;
+    flex-direction: row;
+    width: 40%;
+    justify-content: space-between;
+    margin: auto;
+    margin-top: 3%;
+  }
+
+  &__addons {
+    margin-top: 5%;
+    margin-bottom: 3%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &__graph {
+      width: 45%;
+    }
+
+    &__advice {
+      width: 45%;
+      padding: 16px;
+      background-color: $lightgrey;
+      border-radius: 16px;
+
+      &>p {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.singlesensor_advanced {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 80%;
+  margin: auto;
+  margin-top: 24px;
+
+  .singlesensor__badges__advanced {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &>.singlesensor__circular {
+    width: 50%;
+    margin: 0;
+  }
+
+  &__details {
+    width: 50%;
+
+    &>.singlesensor__badges {
+      width: 100%;
+
+      &>.badgeData {
+        width: 86px;
+        background-color: white;
+        box-shadow: $box-shadow;
+      }
+    }
+  }
+
+
+}
+

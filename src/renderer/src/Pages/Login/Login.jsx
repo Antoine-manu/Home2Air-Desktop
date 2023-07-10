@@ -1,14 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { useContext, useState } from 'react';
-import { fetchFromStorage, fetchRoute } from '../../Utils/auth';
-
-// const keytar = require('keytar');
+import { useState } from 'react';
+import { fetchRoute } from '../../Utils/auth';
 
 export default function Login() {
   const [email, setEmail] = useState('Daveloper@test.com');
   const [password, setPassword] = useState('test');
   const [error, setError] = useState(null);
-  const [connected, setConnected] = useState(false);
 
   const login = async () => {
     try {
@@ -18,10 +15,9 @@ export default function Login() {
       });
       localStorage.setItem('userId', response.userId);
       localStorage.setItem('token', response.token);
-      setConnected(true);
     } catch (error) {
       setError(error.message);
-      console.log(error.message)
+      console.log(error.message);
     }
   };
 
