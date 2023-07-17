@@ -30,7 +30,7 @@ export default function SingleSensor() {
     fetchProbeDatas().then(() => setIsLoading(false));
     // setIsLoading(false)
   }, []);
-
+  
   const fetchProbeDatas = async () => {
     console.log('url', sensor.address);
     const response = await fetchRoute('probe/', 'post', { address: sensor.address }, token);
@@ -73,7 +73,7 @@ export default function SingleSensor() {
   };
 
   useEffect(() => {}, []);
-
+  
   // if (advanced == false) {
   //   sensor.push(
   //     <>
