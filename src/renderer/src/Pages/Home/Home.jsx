@@ -41,11 +41,6 @@ export default function Home() {
     }
   };
 
-  const disconnect = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-  };
-
   return (
     <>
       <div>
@@ -72,13 +67,6 @@ export default function Home() {
           })}
         </div>
         <Link to="/CreateSensor">Ajouter un capteur</Link>;
-        <button
-          onClick={() => {
-            disconnect;
-          }}
-        >
-          Se déconnecter
-        </button>
       </div>
     </>
   );
