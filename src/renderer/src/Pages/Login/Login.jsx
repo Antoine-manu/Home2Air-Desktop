@@ -8,6 +8,7 @@ export default function Login() {
   const [error, setError] = useState(null);
 
   const login = async () => {
+    console.log("here")
     try {
       const response = await fetchRoute('auth/login', 'POST', {
         email,
@@ -15,6 +16,7 @@ export default function Login() {
       });
       localStorage.setItem('userId', response.userId);
       localStorage.setItem('token', response.token);
+      location.reload()
     } catch (error) {
       setError(error.message);
       console.log(error.message);
