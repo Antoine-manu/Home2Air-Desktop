@@ -13,7 +13,7 @@ export default function SmallCaptor({ datas }) {
               <div key={datas.id}>
                 <h4>
                   <Link
-                    to="/SingleSensor"
+                    to="/snesor/single"
                     state={{
                       datas: JSON.stringify(datas)
                     }}

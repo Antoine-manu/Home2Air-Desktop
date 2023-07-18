@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import Login from './Pages/Login/Login';
 import Home from './Pages/Home/Home';
-import {createBrowserRouter, createHashRouter, RouterProvider} from "react-router-dom";
-import Template from "./Pages/Template";
+import { createBrowserRouter, createHashRouter, RouterProvider } from 'react-router-dom';
+import Template from './Pages/Template';
+import CreateSensor from './Pages/Sensor/CreateSensor';
 function App() {
   const [isConnected, setIsConnected] = useState(false);
 
@@ -18,29 +19,38 @@ function App() {
     }
   };
 
-
   const routerLogin = createHashRouter([
     {
-      path: "/",
-      element: <Login/>,
-    },
+      path: '/',
+      element: <Login />
+    }
   ]);
 
   const router = createHashRouter([
     {
-      path: "/",
-      element: <Template/>,
-      children:[
+      path: '/',
+      element: <Template />,
+      children: [
         {
           index: true,
-          element: <Home/>
+          element: <Home />
         }
       ]
     },
+    {
+      path: '/sensor/create',
+      element: <Template />,
+      children: [
+        {
+          index: true,
+          element: <CreateSensor />
+        }
+      ]
+    }
   ]);
 
   //return <React.StrictMode>{!isConnected ? <Login /> : <Home />}</React.StrictMode>;
-  return <RouterProvider router={!isConnected ? routerLogin : router}/>;
+  return <RouterProvider router={!isConnected ? routerLogin : router} />;
 }
 
 export default App;

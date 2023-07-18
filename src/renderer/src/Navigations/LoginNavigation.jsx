@@ -4,17 +4,17 @@ import Register from '../Pages/Register';
 import Home from '../Pages/Home';
 import CreateSensor from '../Pages/Sensor/CreateSensor';
 import EditSensor from '../Pages/Sensor/EditSensor';
+import Sensor from '../Pages/Sensor/SingleSensor';
+import CustomGearSensor from './CustomSensorsTitle/CustomGearSensor';
+import CustomTitleSensor from './CustomSensorsTitle/CustomTitleSensor';
 // import EditProfil from "../Pages/Profil/Edit";
 // import Notifications from "../Pages/Notifications";
 // import CreateNotification from "../Pages/Notifications/Custom/Create";
 // import EditNotification from "../Pages/Notifications/Custom/Edit";
 // import SingleNotification from "../Pages/Notifications/Custom/Single";
-import Sensor from '../Pages/Sensor/SingleSensor';
 // import {UserContext} from "../Context/UserContext";
-import CustomGearSensor from './CustomSensorsTitle/CustomGearSensor';
 // import CustomGearProfil from "./CustomSensorsTitle/CustomGearProfil";
 // import CustomSingleNotif from "./CustomSensorsTitle/CustomSingleNotif";
-import CustomTitleSensor from './CustomSensorsTitle/CustomTitleSensor';
 // import CustomSpaces from "./CustomSensorsTitle/CustomSpaces";
 // import Profil from "../Pages/Profil/Profil";
 // import Space from "../Pages/Spaces";
@@ -59,14 +59,14 @@ export default function LoginNavigation() {
             }}
           />
           <Stack.Screen
-            name="CreateSensor"
+            name="/sensor/create"
             component={CreateSensor}
             options={{
               title: 'Créer un capteur'
             }}
           />
           <Stack.Screen
-            name="EditSensor"
+            name="sensor/edit"
             component={EditSensor}
             options={{
               title: 'Editer un capteur'

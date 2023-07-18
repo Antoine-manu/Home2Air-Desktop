@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 // import { StyleSheet } from 'react-native';
 import { fetchRoute } from '../../Utils/auth';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export default function CreateSensor() {
   const [name, setName] = useState('');
@@ -27,10 +28,17 @@ export default function CreateSensor() {
   const createSensor = async () => {
     const createdBy = `${uid}`;
     // const room_id = room.value;
+    const parameters = {
+      notifications: notifications,
+      advanced: false,
+      temperature: temperature
+    };
+    console.log('parameters', parameters);
     const jsonData = {
       name: name,
       room_id: room,
       reference: reference,
+      parameters: parameters,
       createdBy: createdBy
     };
     console.log('jsonData', jsonData);
@@ -83,7 +91,7 @@ export default function CreateSensor() {
   // });
   return (
     <div>
-      <Link to="/">Retour</Link>
+      <NavLink to="/">Retour</NavLink>
       <h2>Ajouter un capteur</h2>
       <input
         type="text"
@@ -93,7 +101,6 @@ export default function CreateSensor() {
         }}
       />
       <label htmlFor="pet-select">Choose a pet:</label>
-
       <select
         name="pets"
         id="pet-select"
@@ -114,9 +121,30 @@ export default function CreateSensor() {
         type="text"
         placeholder="Référence"
         onKeyDown={(value) => {
+          console.log('value', value.target.value);
           setReference(value.target.value);
         }}
       />
+      <div>
+        <label htmlFor="notifications">Activer les notifications:</label>
+        <input
+          type="checkbox"
+          id="notifications"
+          checked={notifications}
+          onChange={(e) => setNotifications(e.target.checked)}
+        />
+      </div>
+      <select
+        name="temperature"
+        id="temperature-select"
+        onClick={(value) => {
+          setTemperature(value.target.value);
+        }}
+      >
+        <option value="">--Please choose an option--</option>
+        <option value="celsius">Celsius</option>
+        <option value="fahrenheit">Fahrenheit</option>
+      </select>
       <button onClick={createSensor}>Valider</button>
     </div>
   );

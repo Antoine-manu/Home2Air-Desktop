@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { fetchRoute } from '../../Utils/auth';
 import SmallCaptor from '../../Components/SmallCaptor';
-import { Link } from 'react-router-dom';
+import { createBrowserRouter, createHashRouter, RouterProvider, NavLink } from 'react-router-dom';
+import Template from '../Template/Template';
+import CreateSensor from '../Sensor/CreateSensor';
 
 export default function Home() {
   const [places, setPlaces] = useState([]);
@@ -66,7 +68,7 @@ export default function Home() {
             );
           })}
         </div>
-        <Link to="/CreateSensor">Ajouter un capteur</Link>;
+        <NavLink to="/sensor/create">Créer un capteur</NavLink>
       </div>
     </>
   );

@@ -3,7 +3,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "hb432.prettier-eslint-typescript"
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
