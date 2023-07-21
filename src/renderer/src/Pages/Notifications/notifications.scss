@@ -12,7 +12,7 @@
     &__img{
         height: 27%;
         align-self: center;
-        
+
 
         &>img{
             height: 100%;
@@ -37,4 +37,34 @@
         justify-content: space-between;
         border-bottom: solid 3px $lightgrey;
     }
+}
+
+#my-tabs-tab-tab1, #my-tabs-tab-tab2, #my-tabs-tab-tab3{
+  color: #1a1d20;
+}
+
+.notif{
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  height: 56px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 12px;
+
+  &_icon{
+    width: 5%;
+  }
+  &_message{
+    width: 90%;
+  }
+  &_close{
+    width: 5%;
+  }
+}
+
+.passed{
+  background-color: #F8F9F9;
+  color: darkgrey;
 }
