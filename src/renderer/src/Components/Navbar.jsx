@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavLink } from "react-router-dom";
-import logo from '../assets/img/logo_blanc_administrateur.png'
+import logo from '../assets/img/logo_normal.png'
 
 export default function Navbar() {
 
@@ -23,6 +23,13 @@ export default function Navbar() {
                         <NavLink
                           to="/"
                           // className={({ isActive }) => isActive ? activeClassName : undefined }
+                        >
+                          <FontAwesomeIcon icon="fa-solid fa-house" /> Dashboard
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/sensors"
                         >
                           <FontAwesomeIcon icon="fa-solid fa-wind" /> Mes capteurs
                         </NavLink>

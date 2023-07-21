@@ -15,5 +15,5 @@ export default function Template() {
                 <Outlet/>
             </main>
         </ThemeProvider>
-    )   
+    )
 }

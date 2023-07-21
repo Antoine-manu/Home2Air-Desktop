@@ -9,7 +9,7 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
       url: resource,
       ...options
     });
-    
+
     let didTimeOut = false;
     const timer = setTimeout(() => {
       didTimeOut = true;
@@ -28,7 +28,7 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
             response.on('data', (chunk) => {
               data.push(chunk);
             });
-            
+
             response.on('end', () => {
               resolve(
                 new Response(Buffer.concat(data).toString(), {
@@ -42,7 +42,7 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
             reject(new Error(`Request failed with status code ${response.statusCode}`));
           }
         }
-        
+
         response.on('error', (error) => {
           reject(new Error(`Error with the response: ${error.message}`));
         });
@@ -50,7 +50,7 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
 
       request.on('error', (error) => {
         clearTimeout(timer);
-        
+
         if (!didTimeOut) {
           reject(new Error(`Error with the request: ${error.message}`));
         }
@@ -63,7 +63,6 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
       request.end();
     });
   } else {
-    console.log(resource, options);
     return Promise.race([
       fetch(resource, options),
       new Promise((resolve, reject) => {
@@ -76,7 +75,6 @@ const fetchWithTimeout = (resource, options = {}, timeout = 5000) => {
 };
 
 export async function fetchRoute(route, method, params, token = '') {
-  console.log('route, method, params, token', route, method, params, token);
 
   const url = new URL(route, HOST);
   const headers = {
@@ -106,7 +104,6 @@ export async function fetchRoute(route, method, params, token = '') {
   };
 
   try {
-    console.log('fetchOptions', fetchOptions);
     const response = await fetchWithTimeout(url.toString(), fetchOptions);
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -119,7 +116,6 @@ export async function fetchRoute(route, method, params, token = '') {
       throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
     }
     const json = await response.json();
-    console.log('json', json);
     return json;
   } catch (error) {
     console.error('Error while fetching:', error.message);
