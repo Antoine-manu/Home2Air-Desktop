@@ -9,6 +9,7 @@ import {createBrowserRouter, createHashRouter, RouterProvider} from "react-route
 import {faWind, faUser, faBell, faTicket, faArrowRightFromBracket, faGear, faSun, faTemperatureQuarter, faPercent, faVolumeHigh, faCloud, faPenToSquare, faTemperatureHalf, faDroplet, faHouse, faXmark, faCheck} from "@fortawesome/free-solid-svg-icons";
 import Template from './Pages/Template';
 import { Line } from 'react-chartjs-2';
+import Profil from "./Pages/Profil";
 
 library.add(faWind, faUser, faBell, faTicket, faArrowRightFromBracket, faGear, faSun, faTemperatureQuarter, faPercent, faVolumeHigh, faWind, faCloud, faPenToSquare, faTemperatureHalf, faDroplet, faHouse, faXmark, faCheck);
 
@@ -72,6 +73,16 @@ function App() {
         {
           index: true,
           element: <Notifications/>
+        }
+      ]
+    },
+    {
+      path: "/profil",
+      element: <Template/>,
+      children:[
+        {
+          index: true,
+          element: <Profil/>
         }
       ]
     },

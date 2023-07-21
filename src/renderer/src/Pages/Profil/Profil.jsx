@@ -18,7 +18,7 @@ export default function Profil() {
                             <a href=""><FontAwesomeIcon icon="fa-solid fa-pen-to-square" /></a>
                         </div>
                         <div className="profil__img">
-                            <img className="rounded" src={process.env.PUBLIC_URL + '/img/dd.jpg'} alt="" />
+                            <img className="rounded"  alt="" />
                         </div>
                         <div className="form-group">
                             <label for="name">Prénom</label>
@@ -76,5 +76,5 @@ export default function Profil() {
                 </div>
             </div>
         </>
-    )   
+    )
 }
