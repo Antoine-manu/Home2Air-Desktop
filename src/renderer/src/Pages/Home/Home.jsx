@@ -1,9 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import { fetchRoute } from '../../Utils/auth';
 import SmallCaptor from '../../Components/SmallCaptor';
-import { createBrowserRouter, createHashRouter, RouterProvider, NavLink } from 'react-router-dom';
-import Template from '../Template/Template';
-import CreateSensor from '../Sensor/CreateSensor';
+import {NavLink } from 'react-router-dom';
 
 export default function Home() {
   const [places, setPlaces] = useState([]);
@@ -51,15 +50,13 @@ export default function Home() {
           {places.map((place, i) => {
             return (
               <>
-                <h3 key={i}>{place.name}</h3>
+                <h2 key={i}>{place.name}</h2>
                 {rooms.map((room, j) => {
-                  console.log(room);
                   return (
                     <>
-                      <h5 key={j}>{room.name}</h5>
+                      <h3 key={j}>{room.name}</h3>
                       {room.Sensor.map((sensor, k) => {
-                        console.log('sensor', sensor);
-                        return <SmallCaptor key={k} datas={sensor} />;
+                        return <SmallCaptor key={k} datas={{ ...sensor, place, room }} />;
                       })}
                     </>
                   );

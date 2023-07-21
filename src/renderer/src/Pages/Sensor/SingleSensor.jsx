@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { fetchRoute } from '../../Utils/auth';
+import { session } from 'electron';
 
 export default function SingleSensor() {
-  let { state } = useLocation();
-  const [sensor, setSensor] = useState(JSON.parse(state.datas[0]));
-  const [room, setRoom] = useState(JSON.parse(state.datas[1]));
-  const [place, setPlace] = useState(JSON.parse(state.datas[2]));
+  const location = useLocation();
+  const { state } = location;
+  sessionStorage.setItem('sensorId', state.datas.id)
+  const [sensor, setSensor] = useState(state.datas);
+  const [room, setRoom] = useState(state.datas.room);
+  const [place, setPlace] = useState(state.datas.place);
   const uid = useState(localStorage.getItem('userId'));
   const token = useState(localStorage.getItem('token'));
   const [temperature, setTemperature] = useState(0.0);
+  const [tempType, setTempType] = useState('');
   const [pressure, setPressure] = useState(0.0);
   const [humidity, setHumidity] = useState(0.0);
   const [light, setLight] = useState(0.0);
@@ -20,44 +24,84 @@ export default function SingleSensor() {
   const [particules0, setPart0] = useState(0.0);
   const [particules1, setPart1] = useState(0.0);
   const [particules2, setPart2] = useState(0.0);
+  const [advice, setAdvice] = useState('')
   const [daily, setDaily] = useState([]);
   const [days, setDays] = useState([]);
   const [date, setDate] = useState('');
+  const [chartDatas, setChartDatas] = useState({});
+  const [config, setConfig] = useState({});
   const [labels, setLabels] = useState([]); // days labels
   const [isLoading, setIsLoading] = useState(true);
   let [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 });
+
   useEffect(() => {
     fetchProbeDatas().then(() => setIsLoading(false));
-    // setIsLoading(false)
+    setChartDatas({
+      labels: labels ? labels : '',
+      datasets: [
+        {
+          label: 'My First Dataset',
+          data: days ? days : [],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }
+      ]
+    });
+    setConfig({
+      type: 'line',
+      data: chartDatas ? chartDatas : []
+    });
   }, []);
-  
+
+  function getTemperatureFromParameters(data) {
+    const parameters = JSON.parse(data.parameters);
+    return parameters.temperature;
+  }
+
+  function getLastData(data) {
+    let keys = Object.keys(data);
+    let lastKey = keys.sort()[keys.length - 1];
+    return {
+      date: lastKey,
+      aqi: data[lastKey]
+    };
+  }
+
   const fetchProbeDatas = async () => {
     console.log('url', sensor.address);
     const response = await fetchRoute('probe/', 'post', { address: sensor.address }, token);
-    console.log(response.data);
-    //La dernière data de stream, le 3ème élément du tableau response
-    // setTemperature(response[1][response[1].length - 1].temperature);
-    // setPressure(response[1][response[1].length - 1].pressure);
-    // setHumidity(response[1][response[1].length - 1].humidity);
-    // setLight(response[1][response[1].length - 1].light);
-    // setReduced(response[1][response[1].length - 1].reduced);
-    // setOxidised(response[1][response[1].length - 1].oxidised);
-    // setAmmoniac(response[1][response[1].length - 1].ammoniac);
-    // setPart0(response[1][response[1].length - 1].particules0);
-    // setPart1(response[1][response[1].length - 1].particules1);
-    // setPart2(response[1][response[1].length - 1].particules2);
+    console.log(response);
+
+    setTempType(getTemperatureFromParameters(state.datas));
+
+    const responseData = response[1].length > 0 ? response[1][response[1].length - 1] : response[1];
+
+    const { temperature, pressure, humidity, light, reduced, oxidised, ammoniac, particules0: part0, particules1: part1, particules2: part2 } = responseData;
+
+    setTemperature(temperature);
+    setPressure(pressure);
+    setHumidity(humidity);
+    setLight(light);
+    setReduced(reduced);
+    setOxidised(oxidised);
+    setAmmoniac(ammoniac);
+    setPart0(part0);
+    setPart1(part1);
+    setPart2(part2);
+
     setDaily(response[0]);
-    setDate(getCurrentDate);
-    setDays(getPastSixDays);
+    setDays(response[1].length > 0 ? getPastSixDays : response[0]);
+    setDate(response[1].length > 0 ? getCurrentDate : getLastData(response[0]));
+    setAdvice(response[2]);
+
     let _labels = [];
     let past = getPastSixDays();
-    for (let i = 0; i < past.length; i++) {
-      _labels.push(getDayOfWeek(past[i]));
-    }
+    for (let i = 0; i < past.length; i++) _labels.push(getDayOfWeek(past[i]));
+
     setLabels(_labels);
   };
 
-  console.log(state.datas);
 
   //   let color = getColor(percent);
   let size = '350px';
@@ -72,9 +116,10 @@ export default function SingleSensor() {
     }
   };
 
-  useEffect(() => {}, []);
-  
+  useEffect(() => { }, []);
+
   // if (advanced == false) {
+
   //   sensor.push(
   //     <>
   //       <div className="singlesensor__circular">
@@ -163,9 +208,47 @@ export default function SingleSensor() {
   // const { id } = useParams();
   // console.log(id);
 
+  const getCurrentDate = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    if (month < 10) {
+      month = '0' + month;
+    }
+    const day = date.getDate();
+    return `${day}/${month}/${year}`;
+  };
+
+  const getDayOfWeek = (date) => {
+    const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const dayOfWeek = daysOfWeek[new Date(date.split('/').reverse().join('-')).getDay()];
+    return dayOfWeek;
+  };
+
+  const getPastSixDays = () => {
+    const dates = [];
+    for (let i = 0; i < 6; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const year = date.getFullYear();
+
+      let month = date.getMonth() + 1;
+      if (month < 10) {
+        month = '0' + month;
+      }
+
+      let day = date.getDate();
+      if (day < 10) {
+        day = '0' + day;
+      }
+      dates.push(`${day}/${month}/${year}`);
+    }
+    return dates;
+  };
+
   return (
     <>
-      <Link to="/">Retour</Link>
+      <NavLink to="/">Retour</NavLink>
       <div className="singlesensor">
         <div className="singlesensor__titles">
           <h1>{sensor.name}</h1>
@@ -174,13 +257,22 @@ export default function SingleSensor() {
           </span>
         </div>
         <div className="singlesensor__addons">
-          <div className="singlesensor__addons__graph"></div>
+          <div className="singlesensor__datas">
+            <p>
+              Température : {temperature}° {tempType}
+            </p>
+            <p>Humidité {humidity}:</p>
+            <p>Pression: {pressure}</p>
+            <p>Luminosité : {light}</p>
+          </div>
+          <div className="singlesensor__addons__graph">
+            <p>{date.date} : {date.aqi}%</p>
+          </div>
           <div className="singlesensor__addons__advice">
             <h4>Conseil</h4>
+            <span>Qualité de l'air: {advice[1]}</span>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit in debitis
-              beatae, modi adipisci, doloribus quae ipsa eum magnam, amet facere recusandae eaque
-              corrupti est dignissimos atque inventore odit vero!
+              {advice[0]}
             </p>
           </div>
         </div>

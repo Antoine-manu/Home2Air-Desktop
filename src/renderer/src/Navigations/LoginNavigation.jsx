@@ -59,14 +59,14 @@ export default function LoginNavigation() {
             }}
           />
           <Stack.Screen
-            name="/sensor/create"
+            name="CreateSensor"
             component={CreateSensor}
             options={{
               title: 'Créer un capteur'
             }}
           />
           <Stack.Screen
-            name="sensor/edit"
+            name="EditSensor"
             component={EditSensor}
             options={{
               title: 'Editer un capteur'

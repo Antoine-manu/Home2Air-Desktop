@@ -10,7 +10,6 @@ export default function CreateSensor() {
   const [rooms, setRooms] = useState([]);
   const [temperature, setTemperature] = useState('');
   const [notifications, setNotifications] = useState('');
-  const [reference, setReference] = useState('');
   const token = localStorage.getItem('token');
   const uid = localStorage.getItem('userId');
   // const mode = userContext.theme;
@@ -33,15 +32,12 @@ export default function CreateSensor() {
       advanced: false,
       temperature: temperature
     };
-    console.log('parameters', parameters);
     const jsonData = {
       name: name,
       room_id: room,
-      reference: reference,
       parameters: parameters,
       createdBy: createdBy
     };
-    console.log('jsonData', jsonData);
     const response = await fetchRoute('sensor/create', 'POST', jsonData, token);
     if (response) {
       // navigation.navigate('Home');
@@ -96,7 +92,7 @@ export default function CreateSensor() {
       <input
         type="text"
         placeholder="Nom"
-        onKeyDown={(value) => {
+        onKeyUp={(value) => {
           setName(value.target.value);
         }}
       />
@@ -117,14 +113,6 @@ export default function CreateSensor() {
           );
         })}
       </select>
-      <input
-        type="text"
-        placeholder="Référence"
-        onKeyDown={(value) => {
-          console.log('value', value.target.value);
-          setReference(value.target.value);
-        }}
-      />
       <div>
         <label htmlFor="notifications">Activer les notifications:</label>
         <input

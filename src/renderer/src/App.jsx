@@ -1,10 +1,12 @@
 // import icons from './assets/icons.svg'
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Login from './Pages/Login/Login';
 import Home from './Pages/Home/Home';
-import { createBrowserRouter, createHashRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import Template from './Pages/Template';
 import CreateSensor from './Pages/Sensor/CreateSensor';
+import SingleSensor from './Pages/Sensor/SingleSensor';
+import EditSensor from './Pages/Sensor/EditSensor';
 function App() {
   const [isConnected, setIsConnected] = useState(false);
 
@@ -44,6 +46,26 @@ function App() {
         {
           index: true,
           element: <CreateSensor />
+        }
+      ]
+    },
+    {
+      path: '/sensor/:id',
+      element: <Template />,
+      children: [
+        {
+          index: true,
+          element: <SingleSensor />
+        }
+      ]
+    },
+    {
+      path: '/sensor/edit/:id',
+      element: <Template />,
+      children: [
+        {
+          index: true,
+          element: <EditSensor />
         }
       ]
     }

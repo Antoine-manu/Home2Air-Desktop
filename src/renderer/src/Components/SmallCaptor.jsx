@@ -1,27 +1,30 @@
-import { Link } from 'react-router-dom';
+/* eslint-disable prettier/prettier */
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 export default function SmallCaptor({ datas }) {
-  console.log(datas);
   return (
     <>
       <div>
         <div key={datas.id}>
-          <div>
-            <h3>{datas.name}</h3>
             <div>
               <div key={datas.id}>
                 <h4>
-                  <Link
-                    to="/snesor/single"
-                    state={{
-                      datas: JSON.stringify(datas)
+                  <NavLink
+                    to={{
+                      pathname: `/sensor/${datas.id}`,
                     }}
+                    state={{ datas }}
                   >
                     {datas.name}
-                  </Link>
+                  </NavLink>
                 </h4>
-              </div>
+                <label>
+                  <NavLink to={{
+                    pathname: `/sensor/edit/${datas.id}`}} state={{ datas }}>
+                      Modifier
+                      </NavLink>
+                </label>
             </div>
           </div>
         </div>

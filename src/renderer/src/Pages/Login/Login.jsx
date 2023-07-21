@@ -8,7 +8,6 @@ export default function Login() {
   const [error, setError] = useState(null);
 
   const login = async () => {
-    console.log("here")
     try {
       const response = await fetchRoute('auth/login', 'POST', {
         email,
