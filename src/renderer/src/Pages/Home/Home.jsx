@@ -55,7 +55,7 @@ export default function Home() {
             <h1 className="mt-1">{_default.name}</h1>
             <Dropdown>
               <Dropdown.Toggle id="dropdown-basic"></Dropdown.Toggle>
-
+              
               <Dropdown.Menu>
                 {places.map(place =>
                   place.id != _default.id ?

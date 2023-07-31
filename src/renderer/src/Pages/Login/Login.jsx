@@ -61,7 +61,7 @@ export default function Login() {
         </div>
         <div className="form-check d-flex flex-row justify-content-center mt-4">
           <input type="checkbox" id="connected" name="connected" className="form-check-input"/>
-          <label htmlFor="connected" className="form-check-label ms-2">Resté connecté</label>
+          <label htmlFor="connected" className="form-check-label ms-2">Rester connecté</label>
         </div>
         <button className="btn btn-primary col-4 mt-4" onClick={login} id="login-btn">
           Se connecter

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 // import { StyleSheet } from 'react-native';
 import { fetchRoute } from '../../Utils/auth';
 import { Link } from 'react-router-dom';
-import {Button, Modal} from "react-bootstrap";
-import Select from "../../Components/Select";
+import { Button, Modal } from 'react-bootstrap';
+import Select from '../../Components/Select';
 
 export default function CreateSensor(props) {
-  const sensorCreate = props.sensorCreate
+  const sensorCreate = props.sensorCreate;
   const [name, setName] = useState('');
   const [room, setRoom] = useState(0);
   const [rooms, setRooms] = useState([]);
@@ -16,7 +16,6 @@ export default function CreateSensor(props) {
   const token = localStorage.getItem('token');
   const uid = localStorage.getItem('userId');
   const [showModal, setShowModal] = useState(false);
-
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -37,7 +36,6 @@ export default function CreateSensor(props) {
   }, []);
 
   const createSensor = async () => {
-
     const createdBy = `${uid}`;
     const jsonData = {
       name: name,
@@ -48,15 +46,17 @@ export default function CreateSensor(props) {
     console.log('jsonData', jsonData);
     const response = await fetchRoute('sensor/create', 'POST', jsonData, token);
     if (response) {
-      handleCloseModal()
-      sensorCreate(true)
+      handleCloseModal();
+      sensorCreate(true);
       console.log('succès');
     }
   };
 
   return (
     <div>
-      <a className="btn btn-outline-primary" onClick={handleShowModal}>Ajouter un nouveau capteur</a>
+      <a className="btn btn-outline-primary" onClick={handleShowModal}>
+        Ajouter un nouveau capteur
+      </a>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Créer un capteur</Modal.Title>
@@ -66,7 +66,7 @@ export default function CreateSensor(props) {
             type="text"
             placeholder="Nom"
             className="form-control"
-            onKeyDown={(value) => {
+            onKeyUp={(value) => {
               setName(value.target.value);
             }}
           />
@@ -79,7 +79,9 @@ export default function CreateSensor(props) {
               setRoom(Number(value.target.value));
             }}
           >
-            <option value="null" selected disabled>Choissiez une piece</option>
+            <option value="null" selected disabled>
+              Choissiez une piece
+            </option>
             {rooms.map((room, i) => {
               return (
                 <option key={i} value={room.id}>
@@ -92,7 +94,7 @@ export default function CreateSensor(props) {
             type="text"
             placeholder="Référence"
             className="form-control mt-4"
-            onKeyDown={(value) => {
+            onKeyUp={(value) => {
               setReference(value.target.value);
             }}
           />

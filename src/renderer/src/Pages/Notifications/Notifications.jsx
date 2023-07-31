@@ -1,12 +1,17 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, {useState, useEffect} from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {fetchRoute} from "../../Utils/auth";
+import { fetchRoute } from '../../Utils/auth';
+import { NavLink } from 'react-router-dom';
+import CreateConfig from '../NotifsConfig/CreateConfig';
+import NotificationsConfig from '../NotifsConfig/NotifsConfig';
 
 export default function Notifications() {
   const [notificationRecent, setNotificationRecent] = useState([]);
   const [notificationPassed, setNotificationPassed] = useState([]);
+  const [configCreate, setConfigCreate] = useState(false);
+  
   const [token, setToken] = useState(
     localStorage.getItem('token') ? localStorage.getItem('token') : ''
   );
@@ -14,10 +19,14 @@ export default function Notifications() {
     localStorage.getItem('userId') ? localStorage.getItem('userId') : ''
   );
 
+  const getNotifConfig = async function () {
+    const notif = await fetchRoute('notifications-config/find-one-');
+  };
+
   const getNotifRecent = async () => {
     const notif = await fetchRoute(
-      "/notifications/find-recent",
-      "post",
+      '/notifications/find-recent',
+      'post',
       {
         user_id: uid
       },
@@ -28,8 +37,8 @@ export default function Notifications() {
 
   const getNotifPassed = async () => {
     const notif = await fetchRoute(
-      "/notifications/find-passed",
-      "post",
+      '/notifications/find-passed',
+      'post',
       {
         user_id: uid
       },
@@ -39,50 +48,54 @@ export default function Notifications() {
   };
 
   useEffect(() => {
-    console.log(uid)
-    getNotifPassed
-    getNotifRecent
-    console.log(notificationRecent, notificationPassed)
-  }, [])
+    console.log(uid);
+    getNotifPassed;
+    getNotifRecent;
+    console.log(notificationRecent, notificationPassed);
+  }, []);
 
-    return(
-      <div>
-        <Tabs defaultActiveKey="tab1" id="my-tabs">
-          <Tab eventKey="tab1" className="text-dark" title="Recentes">
-            {notificationRecent.length>0 ?
-              notificationRecent.map(notif =>
-                <div className="notif">
-                  <FontAwesomeIcon icon="fa-solid fa-check" className="notif_icon"/>
-                  <span className="notif_message">notif.title</span>
-                  <a className="notif_close d-flex flex-row justify-content-center"><FontAwesomeIcon className="text-danger" icon="fa-xmark"/></a>
-                </div>
-              )
-              :
-              <div className="d-flex flex-row justify-content-center mt-3">
-                <span className="text-secondary">Aucune notification récente</span>
+  return (
+    <div>
+      <NotificationsConfig />
+      <Tabs defaultActiveKey="tab1" id="my-tabs">
+        <Tab eventKey="tab1" className="text-dark" title="Recentes">
+          {notificationRecent.length > 0 ? (
+            notificationRecent.map((notif) => (
+              <div className="notif">
+                <FontAwesomeIcon icon="fa-solid fa-check" className="notif_icon" />
+                <span className="notif_message">notif.title</span>
+                <a className="notif_close d-flex flex-row justify-content-center">
+                  <FontAwesomeIcon className="text-danger" icon="fa-xmark" />
+                </a>
               </div>
-            }
-
-          </Tab>
-          <Tab eventKey="tab2" className="text-dark" title="Historique">
-            {notificationPassed.length>0 ?
-              notificationPassed.map(notif =>
-                <div className="notif passed">
-                  <FontAwesomeIcon icon="fa-solid fa-check" className="notif_icon"/>
-                  <span className="notif_message">notif.title</span>
-                  <a className="notif_close d-flex flex-row justify-content-center"><FontAwesomeIcon className="text-danger" icon="fa-xmark"/></a>
-                </div>
-              )
-              :
-              <div className="d-flex flex-row justify-content-center mt-3">
-                <span className="text-secondary">Aucune notification dans l'historique</span>
+            ))
+          ) : (
+            <div className="d-flex flex-row justify-content-center mt-3">
+              <span className="text-secondary">Aucune notification récente</span>
+            </div>
+          )}
+        </Tab>
+        <Tab eventKey="tab2" className="text-dark" title="Historique">
+          {notificationPassed.length > 0 ? (
+            notificationPassed.map((notif) => (
+              <div className="notif passed">
+                <FontAwesomeIcon icon="fa-solid fa-check" className="notif_icon" />
+                <span className="notif_message">notif.title</span>
+                <a className="notif_close d-flex flex-row justify-content-center">
+                  <FontAwesomeIcon className="text-danger" icon="fa-xmark" />
+                </a>
               </div>
-            }
-          </Tab>
-          <Tab eventKey="tab3" className="text-dark" title="Personnalisés">
-            Contenu de l'onglet 3
-          </Tab>
-        </Tabs>
-      </div>
-    )
+            ))
+          ) : (
+            <div className="d-flex flex-row justify-content-center mt-3">
+              <span className="text-secondary">Aucune notification dans l'historique</span>
+            </div>
+          )}
+        </Tab>
+        <Tab eventKey="tab3" className="text-dark" title="Personnalisés">
+          Contenu de l'onglet 3
+        </Tab>
+      </Tabs>
+    </div>
+  );
 }

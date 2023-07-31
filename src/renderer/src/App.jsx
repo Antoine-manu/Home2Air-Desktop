@@ -4,15 +4,53 @@ import Login from './Pages/Login';
 import Home from './Pages/Home/Home';
 import Dashboard from './Pages/Dashboard';
 import Notifications from './Pages/Notifications';
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {createBrowserRouter, createHashRouter, RouterProvider} from "react-router-dom";
-import {faWind, faUser, faBell, faTicket, faArrowRightFromBracket, faGear, faSun, faTemperatureQuarter, faPercent, faVolumeHigh, faCloud, faPenToSquare, faTemperatureHalf, faDroplet, faHouse, faXmark, faCheck} from "@fortawesome/free-solid-svg-icons";
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { createBrowserRouter, createHashRouter, RouterProvider } from 'react-router-dom';
+import {
+  faWind,
+  faUser,
+  faBell,
+  faTicket,
+  faArrowRightFromBracket,
+  faGear,
+  faSun,
+  faTemperatureQuarter,
+  faPercent,
+  faVolumeHigh,
+  faCloud,
+  faPenToSquare,
+  faTemperatureHalf,
+  faDroplet,
+  faHouse,
+  faXmark,
+  faCheck
+} from '@fortawesome/free-solid-svg-icons';
 import Template from './Pages/Template';
 import { Line } from 'react-chartjs-2';
-import Profil from "./Pages/Profil";
-import SingleSensor from "./Pages/Sensor";
+import Profil from './Pages/Profil';
+import SingleSensor from './Pages/Sensor';
+import NotificationsConfig from './Pages/NotifsConfig';
 
-library.add(faWind, faUser, faBell, faTicket, faArrowRightFromBracket, faGear, faSun, faTemperatureQuarter, faPercent, faVolumeHigh, faWind, faCloud, faPenToSquare, faTemperatureHalf, faDroplet, faHouse, faXmark, faCheck);
+library.add(
+  faWind,
+  faUser,
+  faBell,
+  faTicket,
+  faArrowRightFromBracket,
+  faGear,
+  faSun,
+  faTemperatureQuarter,
+  faPercent,
+  faVolumeHigh,
+  faWind,
+  faCloud,
+  faPenToSquare,
+  faTemperatureHalf,
+  faDroplet,
+  faHouse,
+  faXmark,
+  faCheck
+);
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
@@ -28,79 +66,88 @@ function App() {
     }
   };
 
-
   const routerLogin = createHashRouter([
     {
-      path: "/",
-      element: <Login/>,
-    },
+      path: '/',
+      element: <Login />
+    }
   ]);
 
   const router = createHashRouter([
     {
-      path: "/home",
-      element: <Template/>,
-      children:[
+      path: '/home',
+      element: <Template />,
+      children: [
         {
           index: true,
-          element: <Home/>
+          element: <Home />
         }
       ]
     },
     {
-      path: "/",
-      element: <Template/>,
-      children:[
+      path: '/',
+      element: <Template />,
+      children: [
         {
           index: true,
-          element: <Dashboard/>
+          element: <Dashboard />
         }
       ]
     },
     {
-      path: "/sensors",
-      element: <Template/>,
-      children:[
+      path: '/sensors',
+      element: <Template />,
+      children: [
         {
           index: true,
-          element: <Home/>
+          element: <Home />
         }
       ]
     },
     {
-      path: "/sensor/:id",
-      element: <Template/>,
-      children:[
+      path: '/sensor/:id',
+      element: <Template />,
+      children: [
         {
           index: true,
-          element: <SingleSensor/>
+          element: <SingleSensor />
         }
       ]
     },
     {
-      path: "/notifications",
-      element: <Template/>,
-      children:[
+      path: '/notifications',
+      element: <Template />,
+      children: [
         {
           index: true,
-          element: <Notifications/>
+          element: <Notifications />
         }
       ]
     },
     {
-      path: "/profil",
-      element: <Template/>,
-      children:[
+      path: '/notifications/config',
+      element: <Template />,
+      children: [
         {
           index: true,
-          element: <Profil/>
+          element: <NotificationsConfig />
         }
       ]
     },
+    {
+      path: '/profil',
+      element: <Template />,
+      children: [
+        {
+          index: true,
+          element: <Profil />
+        }
+      ]
+    }
   ]);
 
   //return <React.StrictMode>{!isConnected ? <Login /> : <Home />}</React.StrictMode>;
-  return <RouterProvider router={!isConnected ? routerLogin : router}/>;
+  return <RouterProvider router={!isConnected ? routerLogin : router} />;
 }
 
 export default App;
