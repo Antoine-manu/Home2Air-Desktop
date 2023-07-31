@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { fetchRoute } from '../../Utils/auth';
 
-export default function SingleSensor() {
-  let { state } = useLocation();
-  const [sensor, setSensor] = useState(JSON.parse(state.datas[0]));
-  const [room, setRoom] = useState(JSON.parse(state.datas[1]));
-  const [place, setPlace] = useState(JSON.parse(state.datas[2]));
+export default function SingleSensor({props}) {
+  console.log("ICIIIII" +  props)
+  const [sensor, setSensor] = useState("");
+  const [room, setRoom] = useState("");
+  const [place, setPlace] = useState("Ò");
   const uid = useState(localStorage.getItem('userId'));
   const token = useState(localStorage.getItem('token'));
   const [temperature, setTemperature] = useState(0.0);
@@ -57,7 +57,7 @@ export default function SingleSensor() {
     setLabels(_labels);
   };
 
-  console.log(state.datas);
+  /*console.log(state.datas);*/
 
   //   let color = getColor(percent);
   let size = '350px';

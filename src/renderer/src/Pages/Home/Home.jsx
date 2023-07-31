@@ -1,11 +1,16 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable prettier/prettier */
+import React, { useState, useEffect } from 'react';
 import { fetchRoute } from '../../Utils/auth';
 import SmallCaptor from '../../Components/SmallCaptor';
-import { Link } from 'react-router-dom';
+import {NavLink } from 'react-router-dom';
+import Captor from '../../Components/SmallCaptor'
+import Create from '../Sensor/CreateSensor'
+import {Dropdown} from "react-bootstrap";
 
 export default function Home() {
   const [places, setPlaces] = useState([]);
   const [rooms, setRooms] = useState([]);
+  const [sensorCreate, setSensorCreate] = useState(false);
   const [token, setToken] = useState(
     localStorage.getItem('token') ? localStorage.getItem('token') : ''
   );
@@ -18,8 +23,12 @@ export default function Home() {
     getPlacesList();
   }, []);
 
-  const searchRooms = async (place_id) => {
-    const r = await fetchRoute('room/find-by-place', 'post', { place: place_id }, token);
+  useEffect(() => {
+    searchRooms();
+  }, [_default, sensorCreate]);
+
+  const searchRooms = async () => {
+    const r = await fetchRoute('room/find-by-place', 'post', { place: _default.id }, token);
     setRooms(r);
     return r;
   };
@@ -35,38 +44,57 @@ export default function Home() {
     );
     setPlaces(placeList);
     if (placeList.length > 0) {
-      setDefault(places[0]);
-      const place_id = placeList[0].id;
-      await searchRooms(place_id);
+      setDefault(placeList[0]);
     }
   };
-
   return (
     <>
-      <div>
-        <h1>Accueil</h1>
-        <div>
-          {places.map((place, i) => {
-            return (
-              <>
-                <h3 key={i}>{place.name}</h3>
-                {rooms.map((room, j) => {
-                  console.log(room);
-                  return (
-                    <>
-                      <h5 key={j}>{room.name}</h5>
-                      {room.Sensor.map((sensor, k) => {
-                        console.log('sensor', sensor);
-                        return <SmallCaptor key={k} datas={sensor} />;
-                      })}
-                    </>
-                  );
-                })}
-              </>
-            );
-          })}
+      <div className="home">
+        <div className="d-flex flex-row justify-content-between">
+          <div className="d-flex flex-row">
+            <h1 className="mt-1">{_default.name}</h1>
+            <Dropdown>
+              <Dropdown.Toggle id="dropdown-basic"></Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {places.map(place =>
+                  place.id != _default.id ?
+                    <Dropdown.Item key={place.id} onClick={() => setDefault(place)}>{place.name}</Dropdown.Item>
+                    :
+                    ""
+                )}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+          <Create sensorCreate={setSensorCreate}/>
         </div>
-        <Link to="/CreateSensor">Ajouter un capteur</Link>;
+        <input className="form-control mt-3" type="text" placeholder="Chercher un capteur"/>
+
+        <div>
+          {rooms.length > 0 ?
+            rooms.map(room =>
+              <div className="mt-4 mb-3">
+                <span>{room.name}</span>
+                <div className="d-flex flex-row align-items-center flex-wrap">
+                  {
+                    room.Sensor.length > 0 ?
+                      room.Sensor.map(sensor =>
+                        <Captor key={sensor.id} datas={sensor} place={_default} room={room}/>
+                      )
+                      :
+                      <div className="d-flex flex-row justify-content-center mt-3">
+                        <span className="text-secondary">Aucun capteur</span>
+                      </div>
+                  }
+                </div>
+              </div>
+            )
+            :
+            <div className="d-flex flex-row justify-content-center mt-3">
+              <span className="text-secondary">Aucune piece</span>
+            </div>
+          }
+        </div>
       </div>
     </>
   );

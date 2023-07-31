@@ -10,6 +10,7 @@ import {faWind, faUser, faBell, faTicket, faArrowRightFromBracket, faGear, faSun
 import Template from './Pages/Template';
 import { Line } from 'react-chartjs-2';
 import Profil from "./Pages/Profil";
+import SingleSensor from "./Pages/Sensor";
 
 library.add(faWind, faUser, faBell, faTicket, faArrowRightFromBracket, faGear, faSun, faTemperatureQuarter, faPercent, faVolumeHigh, faWind, faCloud, faPenToSquare, faTemperatureHalf, faDroplet, faHouse, faXmark, faCheck);
 
@@ -63,6 +64,16 @@ function App() {
         {
           index: true,
           element: <Home/>
+        }
+      ]
+    },
+    {
+      path: "/sensor/:id",
+      element: <Template/>,
+      children:[
+        {
+          index: true,
+          element: <SingleSensor/>
         }
       ]
     },

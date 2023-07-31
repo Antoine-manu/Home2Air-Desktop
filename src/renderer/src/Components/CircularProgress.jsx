@@ -2,7 +2,7 @@ import { CircularProgress } from "@mui/material"
 import {getColor} from "../Helpers/getColorHelper"
 
 export default function circularProgress({percent}) {
-    
+
     let color = getColor(percent)
 
     return(
@@ -16,5 +16,5 @@ export default function circularProgress({percent}) {
                 </div>
             </div>
         </>
-    )   
+    )
 }

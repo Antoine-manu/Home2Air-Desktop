@@ -112,6 +112,7 @@ export async function fetchRoute(route, method, params, token = '') {
       );
       if (response.status == 401) {
         throw new Error('Les identifiants saisies sont invalides');
+        localStorage.setItem('token', null);
       }
       throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
     }
