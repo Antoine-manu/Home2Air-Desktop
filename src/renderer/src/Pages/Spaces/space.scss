@@ -1,0 +1,15 @@
+.singleSpace{
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  padding: 12px;
+  border-radius: 8px;
+  margin-right: 3%;
+  border: solid 1px lightgrey;
+
+  &>span{
+    font-weight: bold;
+  }
+}

@@ -26,15 +26,14 @@ export default function CreateSensor(props) {
     setShowModal(false);
   };
 
-  const getAllRooms = async () => {
-    // const tk = ;
-    const r = await fetchRoute('room/find-all', 'post', {}, token);
+  const searchRooms = async () => {
+    const r = await fetchRoute('room/find-by-place', 'post', { place: props.place.id }, token);
     setRooms(r);
   };
 
   useEffect(() => {
-    getAllRooms();
-  }, []);
+    searchRooms();
+  }, [props.place]);
 
   const createSensor = async () => {
 

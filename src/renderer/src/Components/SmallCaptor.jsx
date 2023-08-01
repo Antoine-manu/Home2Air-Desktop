@@ -7,8 +7,9 @@ import {fetchRoute} from "../Utils/auth";
 import {useState} from "react";
 import EditSensor from "../Pages/Sensor/EditSensor"
 
-export default function SmallCaptor({ datas, place, room }) {
+export default function SmallCaptor({ datas, place, room, rooms }) {
   let sensor = []
+  const [name, setName] = useState(datas.name);
   const [token, setToken] = useState(
     localStorage.getItem('token') ? localStorage.getItem('token') : ''
   );
@@ -32,15 +33,14 @@ export default function SmallCaptor({ datas, place, room }) {
         </div>
         <div className='captorcard__right'>
           <div className='captorcard__right__titles'>
-            <p className='captorcard__right__titles__title'>{datas.name}</p>
-            <a className="" data-bs-toggle="modal" data-bs-target={"#edit" + datas.id}><FontAwesomeIcon icon="fa-solid fa-gear"/></a>
+            <p className='captorcard__right__titles__title'>{name}</p>
+            <EditSensor sensor={datas} rooms={rooms} setName={setName} name={name}/>
           </div>
           <div className='captorcard__right__button'>
             <NavLink to={'/sensor/' + datas.id} props={[sensor, place, room]} className='btn btn-primary'>Voir</NavLink>
           </div>
         </div>
       </div>
-      <EditSensor sensor={datas}/>
     </>
   );
 }

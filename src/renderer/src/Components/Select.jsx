@@ -1,11 +1,12 @@
 import React from 'react';
 import Select from 'react-select';
 
-const MySelect = ({props}) => {
+const MySelect = (props) => {
 
   let options = [];
+  let _default = null
 
-  props.map(room => {
+  props.rooms.map(room => {
     if(room.Sensor.length > 0){
       let sensors = []
       room.Sensor.map(sensor => {

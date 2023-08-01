@@ -35,6 +35,11 @@ export default function Navbar() {
                         </NavLink>
                       </li>
                       <li>
+                        <NavLink to="/spaces">
+                          <FontAwesomeIcon icon="fa-solid fa-layer-group" /> Mes espaces
+                        </NavLink>
+                      </li>
+                      <li>
                         <NavLink to="/profil">
                           <FontAwesomeIcon icon="fa-solid fa-user" /> Mon profil
                         </NavLink>

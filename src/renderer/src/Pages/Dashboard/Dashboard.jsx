@@ -3,6 +3,7 @@ import image from '../../assets/img/dashboardImage.svg'
 import { Line } from 'react-chartjs-2';
 import Select from "../../Components/Select";
 import LineChart from "../../Components/LineChart";
+import Clock from "../../Components/Clock";
 import BarMultipleChart from "../../Components/BarMultipleChart";
 import React, {useEffect, useState} from 'react';
 import { Button, Modal, Dropdown } from 'react-bootstrap';
@@ -10,9 +11,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {fetchRoute} from "../../Utils/auth";
 export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
+  const [showConfigModal, setShowConfigModal] = useState(false);
   const [places, setPlaces] = useState([]);
+  const [sensorConfigItem, setSensorConfigItem] = useState([]);
+  const [mainWidgetData, setMainWidgetData] = useState([]);
+  const [sensorConfig, setSensorConfig] = useState();
   const [rooms, setRooms] = useState([]);
   const [_default, setDefault] = useState([]);
+
   const [token, setToken] = useState(
     localStorage.getItem('token') ? localStorage.getItem('token') : ''
   );
@@ -28,13 +34,21 @@ export default function Dashboard() {
     setShowModal(false);
   };
 
-  const searchRooms = async (place_id) => {
-    const r = await fetchRoute('room/find-by-place', 'post', { place: place_id }, token);
+  const handleShowConfigModal = () => {
+    setShowConfigModal(true);
+  };
+
+  const handleCloseConfigModal = () => {
+    setShowConfigModal(false);
+  };
+
+  const searchRooms = async () => {
+    const r = await fetchRoute('room/find-by-place', 'post', { place: _default.id }, token);
     setRooms(r);
     return r;
   };
 
-  const getPlacesList = async () => {
+  const getPlacesList = async (defaultSpace = null) => {
     const placeList = await fetchRoute(
       'place/find-user-place',
       'post',
@@ -45,15 +59,69 @@ export default function Dashboard() {
     );
     setPlaces(placeList);
     if (placeList.length > 0) {
-      setDefault(placeList[0]);
-      const place_id = placeList[0].id;
-      await searchRooms(place_id);
+      if(defaultSpace != null){
+        placeList.map(place =>
+          {
+            if(place.id == defaultSpace){
+              setDefault(place)
+            }
+          }
+        )
+      } else {
+        setDefault(placeList[0]);
+      }
+    }
+  };
+
+  const getSensorConfig = async (id) => {
+   const response = await fetchRoute(
+        `sensor/find-one-by-id`,
+        'post',
+        {
+          id: id,
+        },
+        token
+      );
+    if (response) {
+      setSensorConfigItem(response)
+      const aqi = await fetchRoute(
+        `probe`,
+        'post',
+        {
+          address: "192.168.1.2",
+        },
+        token
+      );
+      setMainWidgetData(aqi)
+      console.log(aqi)
+    }
+  };
+
+  const updateConfig = async () => {
+   const response = await fetchRoute(
+        `place/update/${_default.id}`,
+        'post',
+        {
+          config: parseInt(sensorConfig),
+        },
+        token
+      );
+    if (response) {
+      getPlacesList(_default.id)
+      handleCloseModal()
     }
   };
 
   useEffect(() => {
     getPlacesList();
   }, []);
+
+  useEffect(() => {
+    searchRooms();
+    if(_default.config != null){
+      getSensorConfig(_default.config)
+    }
+  }, [_default]);
 
   return(
     <div className="dashboard">
@@ -88,9 +156,9 @@ export default function Dashboard() {
                   <div className="widgetMain_top_content d-flex flex-column">
                     <div className="d-flex flex-row widgetMain_top_content_head">
                       <div className="d-flex flex-column">
-                        <span className="widgetMain_top_content_head_date">18 Aout, 2022 | 12:45</span>
-                        <span className="widgetMain_top_content_head_name">Capteur salon</span>
-                        <span className="widgetMain_top_content_head_location">Salon, Maison</span>
+                        <Clock />
+                        <span className="widgetMain_top_content_head_name">Capteur {sensorConfigItem.name}</span>
+                        <span className="widgetMain_top_content_head_location">{sensorConfigItem.Room.name}, {sensorConfigItem.Room.Place.name}</span>
                       </div>
                     </div>
                     <div className="d-flex flex-column widgetMain_top_content_mid">
@@ -106,7 +174,7 @@ export default function Dashboard() {
                 </div>
                 <div className="widgetMain_mid">
                   <span className="widgetMain_mid_title">Donnée en temps réel</span>
-                  <span className="widgetMain_mid_undertext">Dernière mise à jour il y as 3 minutes</span>
+                  <span className="widgetMain_mid_undertext text-secondary">Dernière mise à jour il y as 3 minutes</span>
                 </div>
                 <div className="widgetMain_bottom">
                   <div className={"widgetMain_tile"}>
@@ -202,15 +270,13 @@ export default function Dashboard() {
               <div className="widgetComparator_head row align-items-center ms-3 me-3 mt-3">
                 <span className="col-4">Comparatif d'air</span>
                 <div className="widgetComparator_head_select row col-8">
-                  <div className="col-6">
+                  <div className="col-4">
                     <select disabled className="form-select me-1" name="first" id="first">
                       <option value="">Exterieur</option>
                     </select>
                   </div>
-                  <div className="col-6">
-                    <select className="form-select" name="second" id="second">
-                      <option value="">Chambre</option>
-                    </select>
+                  <div className="col-8">
+                    <Select rooms={rooms}/>
                   </div>
                 </div>
               </div>
@@ -264,15 +330,13 @@ export default function Dashboard() {
             <div className="d-flex flex-row ps-4 pe-4 pt-2 align-items-center justify-content-between">
               <span className="col-5">Données sur la derniere semaine</span>
               <div className="widgetComparator_head_select row col-7">
-                <div className="col-6">
+                <div className="col-4">
                   <select className="form-select me-1" name="first" id="first">
                     <option value="">CO2</option>
                   </select>
                 </div>
-                <div className="col-6">
-                  <select className="form-select" name="second" id="second">
-                    <option value="">Chambre</option>
-                  </select>
+                <div className="col-8">
+                  <Select rooms={rooms}/>
                 </div>
               </div>
             </div>
@@ -289,13 +353,21 @@ export default function Dashboard() {
         </Modal.Header>
         <Modal.Body>
           <label htmlFor="mainWidgetInput" className="form-label">Capteur à afficher</label>
-          <Select props={rooms}/>
+          <select className="form-select" onChange={(e) => {setSensorConfig(e.target.value)}  }>
+            {rooms.map(room =>
+              <optgroup label={room.name} key={'selectRoom' + room.id}>
+                {room.Sensor.map(sensor =>
+                  <option key={'selectSensor' + sensor.id} selected={sensor.id == _default.config ? true : false} value={sensor.id}>{sensor.name}</option>
+                )}
+              </optgroup>
+            )}
+          </select>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Fermer
           </Button>
-          <Button variant="primary" onClick={handleCloseModal}>
+          <Button variant="primary" onClick={updateConfig}>
             Enregistrer
           </Button>
         </Modal.Footer>
