@@ -6,12 +6,13 @@ import CreateConfig from './CreateConfig';
 import EditConfig from './EditConfig';
 
 export default function NotificationsConfig() {
-  const token = localStorage.getItem('token');
-  const uid = localStorage.getItem('userId');
   const [showModal, setShowModal] = useState(false);
   const [config, setConfig] = useState([]);
   const [configCreate, setConfigCreate] = useState(false);
   const [configEdit, setConfigEdit] = useState(false);
+  const [data, setData] = useState('');
+  const [token, setToken] = useState('');
+  const [uid, setUid] = useState('');
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -32,9 +33,47 @@ export default function NotificationsConfig() {
     setConfig(response);
   };
 
+  function translateDataTypesAlt(data) {
+    switch (data) {
+      case 'humidity':
+        setData('Humidité');
+        break;
+      case 'pressure':
+        setData('Pression');
+        break;
+      case 'temperature':
+        setData('Température');
+        break;
+      case 'oxidised':
+        setData('Oxydant');
+        break;
+      case 'reduced':
+        setData('Réducteur');
+        break;
+      case 'particules0':
+        setData('Particules 1.0PM');
+        break;
+      case 'particules1':
+        setData('Particules 2.5PM');
+        break;
+      case 'particules2':
+        setData('Particules 10PM');
+        break;
+      default:
+        break;
+    }
+  }
+
   useEffect(() => {
     getUserConfig();
   }, [configEdit, configCreate]);
+
+  useEffect(() => {
+    getUserConfig();
+    // config.map((item, index) => {
+    //   translateDataTypesReverse(item.data);
+    // });
+  }, []);
 
   return (
     <>
@@ -54,14 +93,17 @@ export default function NotificationsConfig() {
           </Modal.Header>
           <Modal.Body>
             <CreateConfig configCreate={setConfigCreate} />
+            <a onClick={getUserConfig}>
+              <FontAwesomeIcon icon="fa-solid fa-rotate-right" />
+            </a>
+
             <div>
               {config.map((item, index) => (
                 <div key={index}>
                   <p>
-                    {item.title} | {item.percent} | {item.message} | {item.createdAt}
-                    <div>
-                      <EditConfig configEdit={setConfigEdit} item={item} />
-                    </div>
+                    {item.title} | {item.percent} | {item.message} |{' '}
+                    {translateDataTypesAlt(item.data)} | {item.createdAt}
+                    <EditConfig configEdit={setConfigEdit} item={item} />
                   </p>
                 </div>
               ))}

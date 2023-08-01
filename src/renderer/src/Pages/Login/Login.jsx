@@ -1,24 +1,36 @@
 /* eslint-disable prettier/prettier */
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { fetchRoute } from '../../Utils/auth';
-import leftImage from '../../assets/img/rendu3D_scene.png'
-import logo from '../../assets/img/logo.svg'
+import { UserContext } from '../../Context/UserContext';
+import Register from '../Register/Register';
+import leftImage from '../../assets/img/rendu3D_scene.png';
+import logo from '../../assets/img/logo.svg';
+import CryptoJS from 'crypto-js';
 
 export default function Login() {
+  const userContext = useContext(UserContext);
   const [email, setEmail] = useState('Daveloper@test.com');
   const [password, setPassword] = useState('test');
+  const [persist, setPersist] = useState(false);
   const [error, setError] = useState(null);
 
+  function _encryptedPassword() {
+    return CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
+  }
+
   const login = async () => {
-    console.log("here")
     try {
+      const encryptedPassword = _encryptedPassword(); // Add password encryption
       const response = await fetchRoute('auth/login', 'POST', {
         email,
-        password
+        password: encryptedPassword // Use the encrypted password
       });
-      localStorage.setItem('userId', response.userId);
-      localStorage.setItem('token', response.token);
-      location.reload()
+      userContext.setUserId(response.userId);
+      userContext.setToken(response.token);
+      if (persist) {
+        window.api.saveCredentials({ uid: response.userId, token: response.token });
+      }
+      // location.reload();
     } catch (error) {
       setError(error.message);
       console.log(error.message);
@@ -28,10 +40,10 @@ export default function Login() {
   return (
     <div className="login">
       <div className="login_left">
-        <img src={leftImage} alt=""/>
+        <img src={leftImage} alt="" />
       </div>
       <div className="row login_right">
-        <img src={logo} alt="" className="logo mt-4"/>
+        <img src={logo} alt="" className="logo mt-4" />
         <h1 className="text-center mt-4">Connectez vous</h1>
         <div className="form-group col-10">
           <label htmlFor="login-mail">Email</label>
@@ -60,8 +72,19 @@ export default function Login() {
           />
         </div>
         <div className="form-check d-flex flex-row justify-content-center mt-4">
-          <input type="checkbox" id="connected" name="connected" className="form-check-input"/>
-          <label htmlFor="connected" className="form-check-label ms-2">Rester connecté</label>
+          <input type="checkbox" id="connected" name="connected" className="form-check-input" />
+          <label
+            htmlFor="connected"
+            className="form-check-label ms-2"
+            onClick={(value) => {
+              setPersist(value.target.value);
+            }}
+          >
+            Rester connecté
+          </label>
+        </div>
+        <div className="form-check d-flex flex-row justify-content-center mt-4">
+          <Register />
         </div>
         <button className="btn btn-primary col-4 mt-4" onClick={login} id="login-btn">
           Se connecter

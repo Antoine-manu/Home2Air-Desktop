@@ -6,14 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export default function CreateConfig(props) {
   const configEdit = props.editConfig;
   const config = props.item;
-  // console.log(props.item);
-  const token = localStorage.getItem('token');
-  const uid = localStorage.getItem('userId');
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState(config.title);
   const [data, setData] = useState(translateDataTypes(config.data));
   const [percent, setPercent] = useState();
   const [message, setMessage] = useState(config.message);
+  const [token, setToken] = useState('');
+  const [uid, setUid] = useState('');
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -108,7 +107,9 @@ export default function CreateConfig(props) {
   };
 
   const deleteConfig = async () => {
-    const response = await fetchRoute(`notifications-config/delete`, 'POST', config.id, token);
+    const id = config.id;
+
+    const response = await fetchRoute(`notifications-config/delete`, 'POST', { id: id }, token);
     if (response) {
       console.log('succès');
       configEdit(true);
@@ -147,36 +148,16 @@ export default function CreateConfig(props) {
               onChange={(value) => {
                 setData(value.target.value);
               }}
+              defaultValue={data}
             >
-              <option value="0" selected={data === '0'}>
-                humidité {/* humidity */}
-              </option>
-              <option value="1" selected={data === '1'}>
-                pression {/* pressure */}
-              </option>
-              <option value="2" selected={data === '2'}>
-                température {/* temperature */}
-              </option>
-              <option selected={data === '3'} value="3">
-                gaz oxydant
-              </option>{' '}
-              {/* oxidised */}
-              <option selected={data === '4'} value="4">
-                gaz réduit
-              </option>{' '}
-              {/* reduced */}
-              <option selected={data === '5'} value="5">
-                particules fines 1.0
-              </option>{' '}
-              {/* particules0 */}
-              <option selected={data === '6'} value="6">
-                particules fines 2.5PM
-              </option>{' '}
-              {/*particules1 */}
-              <option selected={data === '7'} value="7">
-                particules fines 10PM
-              </option>{' '}
-              {/* particules2 */}
+              <option value="0">humidité {/* humidity */}</option>
+              <option value="1">pression {/* pressure */}</option>
+              <option value="2">température {/* temperature */}</option>
+              <option value="3">gaz oxydant</option> {/* oxidised */}
+              <option value="4">gaz réduit</option> {/* reduced */}
+              <option value="5">particules fines 1.0</option> {/* particules0 */}
+              <option value="6">particules fines 2.5PM</option> {/*particules1 */}
+              <option value="7">particules fines 10PM</option> {/* particules2 */}
             </select>
             <input
               type="text"

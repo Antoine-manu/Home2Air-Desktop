@@ -12,12 +12,8 @@ export default function Notifications() {
   const [notificationPassed, setNotificationPassed] = useState([]);
   const [configCreate, setConfigCreate] = useState(false);
   
-  const [token, setToken] = useState(
-    localStorage.getItem('token') ? localStorage.getItem('token') : ''
-  );
-  const [uid, setUid] = useState(
-    localStorage.getItem('userId') ? localStorage.getItem('userId') : ''
-  );
+  const [token, setToken] = useState('');
+  const [uid, setUid] = useState('');
 
   const getNotifConfig = async function () {
     const notif = await fetchRoute('notifications-config/find-one-');
@@ -92,9 +88,7 @@ export default function Notifications() {
             </div>
           )}
         </Tab>
-        <Tab eventKey="tab3" className="text-dark" title="Personnalisés">
-          Contenu de l'onglet 3
-        </Tab>
+        <Tab eventKey="tab3" className="text-dark" title="Personnalisés"></Tab>
       </Tabs>
     </div>
   );

@@ -13,9 +13,9 @@ export default function CreateSensor(props) {
   const [temperature, setTemperature] = useState('');
   const [notifications, setNotifications] = useState('');
   const [reference, setReference] = useState('');
-  const token = localStorage.getItem('token');
-  const uid = localStorage.getItem('userId');
   const [showModal, setShowModal] = useState(false);
+  const [token, setToken] = useState('');
+  const [uid, setUid] = useState('');
 
   const handleShowModal = () => {
     setShowModal(true);

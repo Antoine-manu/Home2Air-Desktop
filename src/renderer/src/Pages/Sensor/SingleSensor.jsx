@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { fetchRoute } from '../../Utils/auth';
 
-export default function SingleSensor({props}) {
-  console.log("ICIIIII" +  props)
-  const [sensor, setSensor] = useState("");
-  const [room, setRoom] = useState("");
-  const [place, setPlace] = useState("Ò");
-  const uid = useState(localStorage.getItem('userId'));
-  const token = useState(localStorage.getItem('token'));
+export default function SingleSensor({ props }) {
+  console.log('ICIIIII' + props);
+  const [sensor, setSensor] = useState('');
+  const [room, setRoom] = useState('');
+  const [place, setPlace] = useState('Ò');
   const [temperature, setTemperature] = useState(0.0);
   const [pressure, setPressure] = useState(0.0);
   const [humidity, setHumidity] = useState(0.0);
@@ -26,6 +24,10 @@ export default function SingleSensor({props}) {
   const [labels, setLabels] = useState([]); // days labels
   const [isLoading, setIsLoading] = useState(true);
   let [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 });
+
+  const [token, setToken] = useState('');
+  const [uid, setUid] = useState('');
+
   useEffect(() => {
     fetchProbeDatas().then(() => setIsLoading(false));
     // setIsLoading(false)

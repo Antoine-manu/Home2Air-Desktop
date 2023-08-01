@@ -29,7 +29,7 @@ import CustomTitleSensor from './CustomSensorsTitle/CustomTitleSensor';
 
 export default function LoginNavigation() {
   const Stack = createNativeStackNavigator();
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState('');
   return (
     <Stack.Navigator initialRouteName={'Login'}>
       {token == null ? (

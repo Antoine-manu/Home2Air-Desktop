@@ -4,22 +4,22 @@ import { Button, Modal } from 'react-bootstrap';
 
 export default function CreateConfig(props) {
   const configCreate = props.configCreate;
-  const token = localStorage.getItem('token');
-  const uid = localStorage.getItem('userId');
+  const [token, setToken] = useState('');
+  const [uid, setUid] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState();
   const [data, setData] = useState();
   const [percent, setPercent] = useState();
   const [message, setMessage] = useState();
-  
+
   const handleShowModal = () => {
     setShowModal(true);
   };
-  
+
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  
+
   function translateDataTypes(data) {
     switch (data) {
       case '0':

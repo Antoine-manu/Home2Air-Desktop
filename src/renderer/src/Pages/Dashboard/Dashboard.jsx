@@ -1,24 +1,23 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import image from '../../assets/img/dashboardImage.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import image from '../../assets/img/dashboardImage.svg';
 import { Line } from 'react-chartjs-2';
-import Select from "../../Components/Select";
-import LineChart from "../../Components/LineChart";
-import BarMultipleChart from "../../Components/BarMultipleChart";
-import React, {useEffect, useState} from 'react';
+import Select from '../../Components/Select';
+import LineChart from '../../Components/LineChart';
+import BarMultipleChart from '../../Components/BarMultipleChart';
+import React, { useEffect, useState, useContext } from 'react';
 import { Button, Modal, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {fetchRoute} from "../../Utils/auth";
+import { fetchRoute } from '../../Utils/auth';
+import { UserContext } from '../../Context/UserContext';
+
 export default function Dashboard() {
+  const userContext = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [places, setPlaces] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [_default, setDefault] = useState([]);
-  const [token, setToken] = useState(
-    localStorage.getItem('token') ? localStorage.getItem('token') : ''
-  );
-  const [uid, setUid] = useState(
-    localStorage.getItem('userId') ? localStorage.getItem('userId') : ''
-  );
+  const [token, setToken] = useState(userContext.token);
+  const [uid, setUid] = useState(userContext.uid);
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -55,7 +54,7 @@ export default function Dashboard() {
     getPlacesList();
   }, []);
 
-  return(
+  return (
     <div className="dashboard">
       <div className="d-flex flex-row align-items-center mb-3">
         <h1 className="mt-1">{_default.name}</h1>
@@ -63,11 +62,14 @@ export default function Dashboard() {
           <Dropdown.Toggle id="dropdown-basic"></Dropdown.Toggle>
 
           <Dropdown.Menu>
-            {places.map(place =>
-              place.id != _default.id ?
-                <Dropdown.Item key={place.id} onClick={() => setDefault(place)}>{place.name}</Dropdown.Item>
-              :
-              ""
+            {places.map((place) =>
+              place.id != _default.id ? (
+                <Dropdown.Item key={place.id} onClick={() => setDefault(place)}>
+                  {place.name}
+                </Dropdown.Item>
+              ) : (
+                ''
+              )
             )}
           </Dropdown.Menu>
         </Dropdown>
@@ -75,47 +77,64 @@ export default function Dashboard() {
       <div className="dashboard_layout">
         <div className="dashboard_layout_col">
           <div className="dashboard_box dashboard_box_large">
-            {_default.config == null ?
+            {_default.config == null ? (
               <div className="d-flex flex-row justify-content-center align-items-center widgetMain_empty">
-                <button className="btn btn-primary" onClick={handleShowModal}>Selectionnez un capteur</button>
+                <button className="btn btn-primary" onClick={handleShowModal}>
+                  Selectionnez un capteur
+                </button>
               </div>
-              :
+            ) : (
               <div className="widgetMain">
                 <div className="widgetMain_top">
                   <a className="widgetMain_top_gear">
-                    <FontAwesomeIcon icon="fa-solid fa-gear" onClick={handleShowModal} className="widgetMain_top_content_head_icon"/>
+                    <FontAwesomeIcon
+                      icon="fa-solid fa-gear"
+                      onClick={handleShowModal}
+                      className="widgetMain_top_content_head_icon"
+                    />
                   </a>
                   <div className="widgetMain_top_content d-flex flex-column">
                     <div className="d-flex flex-row widgetMain_top_content_head">
                       <div className="d-flex flex-column">
-                        <span className="widgetMain_top_content_head_date">18 Aout, 2022 | 12:45</span>
+                        <span className="widgetMain_top_content_head_date">
+                          18 Aout, 2022 | 12:45
+                        </span>
                         <span className="widgetMain_top_content_head_name">Capteur salon</span>
                         <span className="widgetMain_top_content_head_location">Salon, Maison</span>
                       </div>
                     </div>
                     <div className="d-flex flex-column widgetMain_top_content_mid">
                       <div className="d-flex flex-row align-items-center">
-                        <span className="widgetMain_top_content_mid_data">80 <span className="widgetMain_top_content_mid_aqi">AQI</span></span>
+                        <span className="widgetMain_top_content_mid_data">
+                          80 <span className="widgetMain_top_content_mid_aqi">AQI</span>
+                        </span>
                       </div>
-                        <span className="widgetMain_top_content_mid_quality">Qualité moyenne</span>
+                      <span className="widgetMain_top_content_mid_quality">Qualité moyenne</span>
                     </div>
                   </div>
                   <div className="widgetMain_top_image">
-                    <img src={image} className="widgetMain_top_image_one"/>
+                    <img src={image} className="widgetMain_top_image_one" />
                   </div>
                 </div>
                 <div className="widgetMain_mid">
                   <span className="widgetMain_mid_title">Donnée en temps réel</span>
-                  <span className="widgetMain_mid_undertext">Dernière mise à jour il y as 3 minutes</span>
+                  <span className="widgetMain_mid_undertext">
+                    Dernière mise à jour il y as 3 minutes
+                  </span>
                 </div>
                 <div className="widgetMain_bottom">
-                  <div className={"widgetMain_tile"}>
+                  <div className={'widgetMain_tile'}>
                     <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                      <FontAwesomeIcon
+                        icon={'fa-solid fa-cloud'}
+                        className="widgetMain_tile_icon"
+                      />
                       <div className="widgetMain_tile_content">
                         <span className="widgetMain_tile_content_title">1.0 PM</span>
                         <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        <span className="widgetMain_tile_content_unite">
+                          <span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²
+                        </span>
                       </div>
                     </div>
                     <div className="widgetMain_tile_bar">
@@ -123,13 +142,18 @@ export default function Dashboard() {
                       <div className="widgetMain_tile_bar_full"></div>
                     </div>
                   </div>
-                  <div className={"widgetMain_tile"}>
+                  <div className={'widgetMain_tile'}>
                     <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                      <FontAwesomeIcon
+                        icon={'fa-solid fa-cloud'}
+                        className="widgetMain_tile_icon"
+                      />
                       <div className="widgetMain_tile_content">
                         <span className="widgetMain_tile_content_title">1.0 PM</span>
                         <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        <span className="widgetMain_tile_content_unite">
+                          <span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²
+                        </span>
                       </div>
                     </div>
                     <div className="widgetMain_tile_bar">
@@ -137,13 +161,18 @@ export default function Dashboard() {
                       <div className="widgetMain_tile_bar_full"></div>
                     </div>
                   </div>
-                  <div className={"widgetMain_tile"}>
+                  <div className={'widgetMain_tile'}>
                     <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                      <FontAwesomeIcon
+                        icon={'fa-solid fa-cloud'}
+                        className="widgetMain_tile_icon"
+                      />
                       <div className="widgetMain_tile_content">
                         <span className="widgetMain_tile_content_title">1.0 PM</span>
                         <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        <span className="widgetMain_tile_content_unite">
+                          <span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²
+                        </span>
                       </div>
                     </div>
                     <div className="widgetMain_tile_bar">
@@ -151,13 +180,18 @@ export default function Dashboard() {
                       <div className="widgetMain_tile_bar_full"></div>
                     </div>
                   </div>
-                  <div className={"widgetMain_tile"}>
+                  <div className={'widgetMain_tile'}>
                     <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                      <FontAwesomeIcon
+                        icon={'fa-solid fa-cloud'}
+                        className="widgetMain_tile_icon"
+                      />
                       <div className="widgetMain_tile_content">
                         <span className="widgetMain_tile_content_title">1.0 PM</span>
                         <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        <span className="widgetMain_tile_content_unite">
+                          <span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²
+                        </span>
                       </div>
                     </div>
                     <div className="widgetMain_tile_bar">
@@ -165,13 +199,18 @@ export default function Dashboard() {
                       <div className="widgetMain_tile_bar_full"></div>
                     </div>
                   </div>
-                  <div className={"widgetMain_tile"}>
+                  <div className={'widgetMain_tile'}>
                     <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                      <FontAwesomeIcon
+                        icon={'fa-solid fa-cloud'}
+                        className="widgetMain_tile_icon"
+                      />
                       <div className="widgetMain_tile_content">
                         <span className="widgetMain_tile_content_title">1.0 PM</span>
                         <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        <span className="widgetMain_tile_content_unite">
+                          <span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²
+                        </span>
                       </div>
                     </div>
                     <div className="widgetMain_tile_bar">
@@ -179,13 +218,18 @@ export default function Dashboard() {
                       <div className="widgetMain_tile_bar_full"></div>
                     </div>
                   </div>
-                  <div className={"widgetMain_tile"}>
+                  <div className={'widgetMain_tile'}>
                     <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                      <FontAwesomeIcon
+                        icon={'fa-solid fa-cloud'}
+                        className="widgetMain_tile_icon"
+                      />
                       <div className="widgetMain_tile_content">
                         <span className="widgetMain_tile_content_title">1.0 PM</span>
                         <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        <span className="widgetMain_tile_content_unite">
+                          <span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²
+                        </span>
                       </div>
                     </div>
                     <div className="widgetMain_tile_bar">
@@ -195,7 +239,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-            }
+            )}
           </div>
           <div className="dashboard_box dashboard_box_small">
             <div className="widgetComparator">
@@ -224,13 +268,13 @@ export default function Dashboard() {
                     <span>Excellente qualité</span>
                     <div className="widgetComparator_content_widget_content_badge">
                       <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-large fa-temperature-half"/>
+                        <FontAwesomeIcon icon="fa-solid fa-large fa-temperature-half" />
                       </div>
                       <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-cloud"/>
+                        <FontAwesomeIcon icon="fa-solid fa-cloud" />
                       </div>
                       <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-droplet"/>
+                        <FontAwesomeIcon icon="fa-solid fa-droplet" />
                       </div>
                     </div>
                   </div>
@@ -244,13 +288,13 @@ export default function Dashboard() {
                     <span>Excellente qualité</span>
                     <div className="widgetComparator_content_widget_content_badge">
                       <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-large fa-temperature-half"/>
+                        <FontAwesomeIcon icon="fa-solid fa-large fa-temperature-half" />
                       </div>
                       <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-cloud"/>
+                        <FontAwesomeIcon icon="fa-solid fa-cloud" />
                       </div>
                       <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-droplet"/>
+                        <FontAwesomeIcon icon="fa-solid fa-droplet" />
                       </div>
                     </div>
                   </div>
@@ -276,10 +320,10 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <LineChart/>
+            <LineChart />
           </div>
           <div className="dashboard_box dashboard_box_large pt-3">
-            <BarMultipleChart/>
+            <BarMultipleChart />
           </div>
         </div>
       </div>
@@ -288,8 +332,10 @@ export default function Dashboard() {
           <Modal.Title>Paramètres du widget</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label htmlFor="mainWidgetInput" className="form-label">Capteur à afficher</label>
-          <Select props={rooms}/>
+          <label htmlFor="mainWidgetInput" className="form-label">
+            Capteur à afficher
+          </label>
+          <Select props={rooms} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
@@ -301,5 +347,5 @@ export default function Dashboard() {
         </Modal.Footer>
       </Modal>
     </div>
-  )
+  );
 }
