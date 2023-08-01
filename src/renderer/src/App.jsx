@@ -59,15 +59,16 @@ library.add(
 function App() {
   const userContext = useContext(UserContext);
   const [isConnected, setIsConnected] = useState(false);
-  const [token, setToken] = useState(userContext.token);
-  const [uid, setUid] = useState(userContext.uid);
+
   useEffect(() => {
     checkIfLoggedIn();
   }, []);
-  
-  const checkIfLoggedIn = () => {
-    const token = keytar.getPassword('token', 'token');
-    if (token) {
+
+  const checkIfLoggedIn = async () => {
+    const credentials = await window.api.readCredentials();
+    userContext.setToken(credentials.token);
+    userContext.setUserId(credentials.uid);
+    if (credentials.token) {
       setIsConnected(true);
     }
   };
@@ -154,11 +155,7 @@ function App() {
 
   //return <React.StrictMode>{!isConnected ? <Login /> : <Home />}</React.StrictMode>;
 
-  return (
-    <UserProvider>
-      <RouterProvider router={!isConnected ? routerLogin : router} />;
-    </UserProvider>
-  );
+  return <RouterProvider router={!isConnected ? routerLogin : router} />;
 }
 
 export default App;

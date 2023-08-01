@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { fetchRoute } from '../../Utils/auth';
 import { Button, Modal } from 'react-bootstrap';
+import { UserContext } from '../../Context/UserContext';
 
 export default function CreateConfig(props) {
   const configCreate = props.configCreate;
-  const [token, setToken] = useState('');
-  const [uid, setUid] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState();
   const [data, setData] = useState();
@@ -52,15 +51,14 @@ export default function CreateConfig(props) {
   }
 
   const createConfig = async () => {
-    const user_id = uid;
     const jsonData = {
       title: title,
       data: translateDataTypes(data),
-      user_id: user_id,
+      user_id: props.userContext.userId,
       message: message
     };
     console.log('jsonData', jsonData);
-    const response = await fetchRoute('notifications-config/create', 'POST', jsonData, token);
+    const response = await fetchRoute('notifications-config/create', 'POST', jsonData, props.userContext.token);
     if (response) {
       handleCloseModal();
       configCreate(true);

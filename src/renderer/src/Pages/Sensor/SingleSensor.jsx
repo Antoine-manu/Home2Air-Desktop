@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { fetchRoute } from '../../Utils/auth';
+import { UserContext } from '../../Context/UserContext';
 
 export default function SingleSensor({ props }) {
   console.log('ICIIIII' + props);
+  const userContext = useContext(UserContext);
   const [sensor, setSensor] = useState('');
   const [room, setRoom] = useState('');
   const [place, setPlace] = useState('Ò');
@@ -35,7 +37,7 @@ export default function SingleSensor({ props }) {
 
   const fetchProbeDatas = async () => {
     console.log('url', sensor.address);
-    const response = await fetchRoute('probe/', 'post', { address: sensor.address }, token);
+    const response = await fetchRoute('probe/', 'post', { address: sensor.address }, userContext.token);
     console.log(response.data);
     //La dernière data de stream, le 3ème élément du tableau response
     // setTemperature(response[1][response[1].length - 1].temperature);

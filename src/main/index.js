@@ -2,7 +2,6 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
-import keytar from 'keytar';
 import Store from 'electron-store';
 
 require('dotenv').config({ path: 'config.env' });
@@ -86,10 +85,9 @@ ipcMain.handle('setDatas', function (event, data) {
   store.set({ token: data.token });
 });
 
-ipcMain.handle('getDatas', function (event, data) {
+ipcMain.handle('getDatas', async function (event, data) {
   console.log(data);
-  // keytar.setPassword('token', 'token', JSON.stringify(data.token));
-  // keytar.setPassword('uid', 'userId', JSON.stringify(data.userId));
   const token = store.get('token');
   const uid = store.get('uid');
+  return { token, uid };
 });

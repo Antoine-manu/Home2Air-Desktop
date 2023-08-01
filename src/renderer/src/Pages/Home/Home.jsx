@@ -1,18 +1,18 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { fetchRoute } from '../../Utils/auth';
 import SmallCaptor from '../../Components/SmallCaptor';
 import { NavLink } from 'react-router-dom';
 import Captor from '../../Components/SmallCaptor';
 import Create from '../Sensor/CreateSensor';
+import { UserContext } from '../../Context/UserContext';
 import { Dropdown } from 'react-bootstrap';
 
 export default function Home() {
+  const userContext = useContext(UserContext);
   const [places, setPlaces] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [sensorCreate, setSensorCreate] = useState(false);
-  const [token, setToken] = useState('');
-  const [uid, setUid] = useState('');
   const [_default, setDefault] = useState([]);
 
   useEffect(() => {
@@ -24,20 +24,25 @@ export default function Home() {
   }, [_default, sensorCreate]);
 
   const searchRooms = async () => {
-    const r = await fetchRoute('room/find-by-place', 'post', { place: _default.id }, token);
+    const r = await fetchRoute(
+      'room/find-by-place',
+      'post',
+      { place: _default.id },
+      userContext.token
+    );
     setRooms(r);
     return r;
   };
 
   const getPlacesList = async () => {
-    console.log(token);
+    console.log(userContext)
     const placeList = await fetchRoute(
       'place/find-user-place',
       'post',
       {
-        user_id: uid
+        user_id: userContext.userId
       },
-      token
+      userContext.token
     );
     setPlaces(placeList);
     if (placeList.length > 0) {

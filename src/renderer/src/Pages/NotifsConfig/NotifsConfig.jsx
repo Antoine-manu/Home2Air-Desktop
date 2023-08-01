@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { fetchRoute } from '../../Utils/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Modal } from 'react-bootstrap';
 import CreateConfig from './CreateConfig';
 import EditConfig from './EditConfig';
+import { UserContext } from '../../Context/UserContext';
 
-export default function NotificationsConfig() {
+export default function NotificationsConfig(props) {
+  // const userContext = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [config, setConfig] = useState([]);
   const [configCreate, setConfigCreate] = useState(false);
   const [configEdit, setConfigEdit] = useState(false);
   const [data, setData] = useState('');
-  const [token, setToken] = useState('');
-  const [uid, setUid] = useState('');
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -26,8 +26,8 @@ export default function NotificationsConfig() {
     const response = await fetchRoute(
       'notifications-config/find-user-config',
       'POST',
-      { user_id: uid },
-      token
+      { user_id: props.userContext.userId },
+      props.userContext.token
     );
     console.log(response);
     setConfig(response);
@@ -65,11 +65,11 @@ export default function NotificationsConfig() {
   }
 
   useEffect(() => {
-    getUserConfig();
+    // getUserConfig();
   }, [configEdit, configCreate]);
 
   useEffect(() => {
-    getUserConfig();
+    // getUserConfig();
     // config.map((item, index) => {
     //   translateDataTypesReverse(item.data);
     // });
@@ -92,7 +92,7 @@ export default function NotificationsConfig() {
             <Modal.Title>Vos configurations</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <CreateConfig configCreate={setConfigCreate} />
+            <CreateConfig configCreate={setConfigCreate} userContext={props.userContext} />
             <a onClick={getUserConfig}>
               <FontAwesomeIcon icon="fa-solid fa-rotate-right" />
             </a>
@@ -103,7 +103,11 @@ export default function NotificationsConfig() {
                   <p>
                     {item.title} | {item.percent} | {item.message} |{' '}
                     {translateDataTypesAlt(item.data)} | {item.createdAt}
-                    <EditConfig configEdit={setConfigEdit} item={item} />
+                    <EditConfig
+                      configEdit={setConfigEdit}
+                      item={item}
+                      userContext={props.userContext}
+                    />
                   </p>
                 </div>
               ))}

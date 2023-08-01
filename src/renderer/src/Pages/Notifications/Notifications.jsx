@@ -1,19 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { fetchRoute } from '../../Utils/auth';
 import { NavLink } from 'react-router-dom';
 import CreateConfig from '../NotifsConfig/CreateConfig';
 import NotificationsConfig from '../NotifsConfig/NotifsConfig';
+import { UserContext } from '../../Context/UserContext';
 
 export default function Notifications() {
   const [notificationRecent, setNotificationRecent] = useState([]);
   const [notificationPassed, setNotificationPassed] = useState([]);
   const [configCreate, setConfigCreate] = useState(false);
-  
-  const [token, setToken] = useState('');
-  const [uid, setUid] = useState('');
+
+  const userContext = useContext(UserContext);
 
   const getNotifConfig = async function () {
     const notif = await fetchRoute('notifications-config/find-one-');
@@ -24,9 +24,9 @@ export default function Notifications() {
       '/notifications/find-recent',
       'post',
       {
-        user_id: uid
+        user_id: userContext.userId
       },
-      token
+      userContext.token
     );
     setNotificationRecent(notif);
   };
@@ -36,23 +36,21 @@ export default function Notifications() {
       '/notifications/find-passed',
       'post',
       {
-        user_id: uid
+        user_id: userContext.userId
       },
-      token
+      userContext.token
     );
     setNotificationPassed(notif);
   };
 
   useEffect(() => {
-    console.log(uid);
     getNotifPassed;
     getNotifRecent;
-    console.log(notificationRecent, notificationPassed);
   }, []);
 
   return (
     <div>
-      <NotificationsConfig />
+      <NotificationsConfig userContext={userContext} />
       <Tabs defaultActiveKey="tab1" id="my-tabs">
         <Tab eventKey="tab1" className="text-dark" title="Recentes">
           {notificationRecent.length > 0 ? (

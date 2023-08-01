@@ -16,8 +16,6 @@ export default function Dashboard() {
   const [places, setPlaces] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [_default, setDefault] = useState([]);
-  const [token, setToken] = useState(userContext.token);
-  const [uid, setUid] = useState(userContext.uid);
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -27,20 +25,32 @@ export default function Dashboard() {
     setShowModal(false);
   };
 
+  const fillContext = async () => {
+    const credentials = await window.api.readCredentials();
+    userContext.setToken(credentials.token);
+    userContext.setUserId(credentials.uid);
+  };
+
   const searchRooms = async (place_id) => {
-    const r = await fetchRoute('room/find-by-place', 'post', { place: place_id }, token);
+    const r = await fetchRoute(
+      'room/find-by-place',
+      'post',
+      { place: place_id },
+      userContext.token
+    );
     setRooms(r);
     return r;
   };
 
   const getPlacesList = async () => {
+    console.log(userContext);
     const placeList = await fetchRoute(
       'place/find-user-place',
       'post',
       {
-        user_id: uid
+        user_id: userContext.userId
       },
-      token
+      userContext.token
     );
     setPlaces(placeList);
     if (placeList.length > 0) {
@@ -51,6 +61,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    fillContext();
     getPlacesList();
   }, []);
 

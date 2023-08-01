@@ -1,20 +1,20 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchRoute } from '../../Utils/auth';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { UserContext } from '../../Context/UserContext';
 
 export default function Profil() {
   const [user, setUser] = useState([]);
-  const [token, setToken] = useState('');
-  const [uid, setUid] = useState('');
+  const userContext = useContext(UserContext);
 
   const getUser = async () => {
     const userAwait = await fetchRoute(
       'user/find-one-by-id',
       'post',
       {
-        id: uid
+        id: userContext.userId
       },
-      token
+      userContext.token
     );
     console.log(userAwait);
     setUser(userAwait);

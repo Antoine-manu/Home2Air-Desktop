@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 // import { StyleSheet } from 'react-native';
 import { fetchRoute } from '../../Utils/auth';
 import { Link } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
 import Select from '../../Components/Select';
+import { UserContext } from '../../Context/UserContext';
 
 export default function CreateSensor(props) {
   const sensorCreate = props.sensorCreate;
+  const userContext = useContext(UserContext);
   const [name, setName] = useState('');
   const [room, setRoom] = useState(0);
   const [rooms, setRooms] = useState([]);
@@ -14,8 +16,6 @@ export default function CreateSensor(props) {
   const [notifications, setNotifications] = useState('');
   const [reference, setReference] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [token, setToken] = useState('');
-  const [uid, setUid] = useState('');
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -27,7 +27,7 @@ export default function CreateSensor(props) {
 
   const getAllRooms = async () => {
     // const tk = ;
-    const r = await fetchRoute('room/find-all', 'post', {}, token);
+    const r = await fetchRoute('room/find-all', 'post', {}, userContext.token);
     setRooms(r);
   };
 
@@ -36,7 +36,7 @@ export default function CreateSensor(props) {
   }, []);
 
   const createSensor = async () => {
-    const createdBy = `${uid}`;
+    const createdBy = `${userContext.userId}`;
     const jsonData = {
       name: name,
       room_id: room,
@@ -44,7 +44,7 @@ export default function CreateSensor(props) {
       createdBy: createdBy
     };
     console.log('jsonData', jsonData);
-    const response = await fetchRoute('sensor/create', 'POST', jsonData, token);
+    const response = await fetchRoute('sensor/create', 'POST', jsonData, userContext.token);
     if (response) {
       handleCloseModal();
       sensorCreate(true);

@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { fetchRoute } from '../../Utils/auth';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UserContext } from '../../Context/UserContext';
 
 export default function CreateConfig(props) {
   const configEdit = props.editConfig;
+  const userContext = props.userContext
   const config = props.item;
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState(config.title);
   const [data, setData] = useState(translateDataTypes(config.data));
   const [percent, setPercent] = useState();
   const [message, setMessage] = useState(config.message);
-  const [token, setToken] = useState('');
-  const [uid, setUid] = useState('');
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -85,11 +85,10 @@ export default function CreateConfig(props) {
   }
 
   const editConfig = async () => {
-    const user_id = uid;
     const jsonData = {
       title: title,
       data: translateDataTypesReverse(data),
-      user_id: user_id,
+      user_id: userContext.userId,
       message: message
     };
     console.log('jsonData', jsonData);
@@ -97,7 +96,7 @@ export default function CreateConfig(props) {
       `notifications-config/update/${config.id}`,
       'POST',
       jsonData,
-      token
+      userContext.token
     );
     if (response) {
       handleCloseModal();
@@ -109,7 +108,12 @@ export default function CreateConfig(props) {
   const deleteConfig = async () => {
     const id = config.id;
 
-    const response = await fetchRoute(`notifications-config/delete`, 'POST', { id: id }, token);
+    const response = await fetchRoute(
+      `notifications-config/delete`,
+      'POST',
+      { id: id },
+      userContext.token
+    );
     if (response) {
       console.log('succès');
       configEdit(true);
