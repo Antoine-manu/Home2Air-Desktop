@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavLink } from "react-router-dom";
-import logo from '../assets/img/logo_normal.png'
+import logo from '../assets/img/logoAdmin.svg'
 
 export default function Navbar() {
 
@@ -17,7 +17,7 @@ export default function Navbar() {
             <header>
                 <nav className="navbar">
                   <div>
-                    <img src={logo} />
+                    <img className="align-self-center" style={{width: "90%"}} src={logo} />
                     <ul>
                       <li>
                         <NavLink
@@ -49,16 +49,11 @@ export default function Navbar() {
                           <FontAwesomeIcon icon="fa-solid fa-bell" /> Notifications
                         </NavLink>
                       </li>
-                      <li>
-                        <NavLink to="/tickets">
-                          <FontAwesomeIcon icon="fa-solid fa-ticket" /> Mes tickets
-                        </NavLink>
-                      </li>
                     </ul>
                   </div>
-                  <NavLink to="/" onClick={() => disconnect() }>
+                  <a className="pointer-event" onClick={() => disconnect() }>
                       Se déconnecter <FontAwesomeIcon icon="fa-solid fa-arrow-right-from-bracket" />
-                  </NavLink>
+                  </a>
                 </nav>
             </header>
         </>

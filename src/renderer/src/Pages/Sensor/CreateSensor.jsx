@@ -91,7 +91,7 @@ export default function CreateSensor(props) {
             type="text"
             placeholder="Référence"
             className="form-control mt-4"
-            onKeyDown={(value) => {
+            onChange={(value) => {
               setReference(value.target.value);
             }}
           />

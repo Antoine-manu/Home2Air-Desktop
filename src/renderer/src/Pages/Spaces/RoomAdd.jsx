@@ -39,7 +39,7 @@ export default function RoomAdd(props) {
         handleCloseModal()
         props.places.map(place => {
           if(place.id == place_id){
-            props.setDefault(place)
+            props.submit(place.id)
           }
         })
       }

@@ -27,8 +27,16 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    searchRooms();
-  }, [_default, sensorCreate]);
+    console.log(sensorCreate)
+    if(sensorCreate == true){
+      searchRooms(_default.id);
+      setSensorCreate(false);
+    }
+  }, [sensorCreate]);
+
+  useEffect(() => {
+    searchRooms(_default.id);
+  }, [_default]);
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -37,14 +45,15 @@ export default function Home() {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  const searchRooms = async () => {
-    const r = await fetchRoute('room/find-by-place', 'post', { place: _default.id }, token);
+  const searchRooms = async (pid) => {
+    const r = await fetchRoute('room/find-by-place', 'post', { place: pid }, token);
     setRooms(r);
     console.log(r)
     return r;
   };
 
-  const getPlacesList = async () => {
+  const getPlacesList = async (pid = null) => {
+    console.log("places mise a jour")
     const placeList = await fetchRoute(
       'place/find-user-place',
       'post',
@@ -55,7 +64,17 @@ export default function Home() {
     );
     setPlaces(placeList);
     if (placeList.length > 0) {
-      setDefault(placeList[0]);
+      console.log("liste de places mise a jour")
+      if(pid == null){
+        setDefault(placeList[0]);
+      } else {
+        placeList.map(place => {
+            if (place.id == pid) {
+              setDefault(place)
+            }
+          }
+        )
+      }
     }
   };
   return (
@@ -90,7 +109,7 @@ export default function Home() {
                   {
                     room.Sensor.length > 0 ?
                       room.Sensor.map(sensor =>
-                        <Captor key={sensor.id} datas={sensor} place={_default} room={room} rooms={rooms}/>
+                        <Captor key={sensor.id} submit={setSensorCreate} datas={sensor} place={_default} room={room} rooms={rooms}/>
                       )
                       :
                       <div className="d-flex flex-row justify-content-center mt-3">

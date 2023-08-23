@@ -38,6 +38,7 @@ export default function Edit(props) {
         token
       );
       if (response) {
+        console.log(response)
         props.submit(props.place)
         handleCloseModal()
       }
@@ -48,7 +49,7 @@ export default function Edit(props) {
 
   return(
     <>
-      <button onClick={handleShowModal} className="btn btn-outline-primary">Modifier l'espace</button>
+      <button onClick={handleShowModal} className="btn btn-outline-primary"><FontAwesomeIcon icon="fa-solid fa-edit"/></button>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Editer l'espace {props.space.name}</Modal.Title>

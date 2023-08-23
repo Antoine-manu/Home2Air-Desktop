@@ -1,9 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import image from '../../assets/img/dashboardImage.svg'
 import { Line } from 'react-chartjs-2';
-import Select from "../../Components/Select";
 import LineChart from "../../Components/LineChart";
 import Clock from "../../Components/Clock";
+import Timer from "../../Components/Timer";
+import CustomSVG from "../../Components/ImageDesktop";
 import BarMultipleChart from "../../Components/BarMultipleChart";
 import React, {useEffect, useState} from 'react';
 import { Button, Modal, Dropdown } from 'react-bootstrap';
@@ -148,121 +149,125 @@ export default function Dashboard() {
                 <button className="btn btn-primary" onClick={handleShowModal}>Selectionnez un capteur</button>
               </div>
               :
-              <div className="widgetMain">
-                <div className="widgetMain_top">
-                  <a className="widgetMain_top_gear">
-                    <FontAwesomeIcon icon="fa-solid fa-gear" onClick={handleShowModal} className="widgetMain_top_content_head_icon"/>
-                  </a>
-                  <div className="widgetMain_top_content d-flex flex-column">
-                    <div className="d-flex flex-row widgetMain_top_content_head">
-                      <div className="d-flex flex-column">
-                        <Clock />
-                        <span className="widgetMain_top_content_head_name">Capteur {sensorConfigItem.name}</span>
-                        <span className="widgetMain_top_content_head_location">{sensorConfigItem.Room.name}, {sensorConfigItem.Room.Place.name}</span>
+              mainWidgetData[0] != null ?
+                <div className="widgetMain">
+                  <div className={parseInt(mainWidgetData[2][2]) < 33 ? "widgetMain_top bg-danger" : parseInt(mainWidgetData[2][2]) < 66 ? "widgetMain_top bg-warning" : "widgetMain_top bg-success" }>
+                    <a className="widgetMain_top_gear">
+                      <FontAwesomeIcon icon="fa-solid fa-gear" onClick={handleShowModal} className="widgetMain_top_content_head_icon"/>
+                    </a>
+                    <div className="widgetMain_top_content d-flex flex-column">
+                      <div className="d-flex flex-row widgetMain_top_content_head">
+                        <div className="d-flex flex-column">
+                          <Clock />
+                          <span className="widgetMain_top_content_head_name">Capteur {sensorConfigItem.name}</span>
+                          {sensorConfigItem.Room != null ?
+                            <span className="widgetMain_top_content_head_location">{sensorConfigItem.Room.name}, {sensorConfigItem.Room.Place.name}</span>
+                            : ""}
+                        </div>
+                      </div>
+                      <div className="d-flex flex-column widgetMain_top_content_mid">
+                        <div className="d-flex flex-row align-items-center">
+                          <span className="widgetMain_top_content_mid_data">{parseInt(mainWidgetData[2][2])} <span className="widgetMain_top_content_mid_aqi">AQI</span></span>
+                        </div>
+                        <span className="widgetMain_top_content_mid_quality">Qualité {mainWidgetData[2][1]}</span>
                       </div>
                     </div>
-                    <div className="d-flex flex-column widgetMain_top_content_mid">
+                    <div className="widgetMain_top_image">
+                      <CustomSVG data={parseInt(mainWidgetData[2][2])}/>
+                    </div>
+                  </div>
+                  <div className="widgetMain_mid">
+                    <span className="widgetMain_mid_title">Donnée en temps réel</span>
+                    <Timer />
+                  </div>
+                  <div className="widgetMain_bottom">
+                    <div className={"widgetMain_tile"}>
                       <div className="d-flex flex-row align-items-center">
-                        <span className="widgetMain_top_content_mid_data">80 <span className="widgetMain_top_content_mid_aqi">AQI</span></span>
+                        <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                        <div className="widgetMain_tile_content">
+                          <span className="widgetMain_tile_content_title">1.0 PM</span>
+                          <span className={Math.round(mainWidgetData[1]["particules0"]) < 30 ? "widgetMain_tile_content_data text-danger" : Math.round(mainWidgetData[1]["particules0"]) < 60 ? "widgetMain_tile_content_data text-warning" : "widgetMain_tile_content_data text-success"}>{Math.round(mainWidgetData[1]["particules0"])}</span>
+                          <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        </div>
                       </div>
-                        <span className="widgetMain_top_content_mid_quality">Qualité moyenne</span>
-                    </div>
-                  </div>
-                  <div className="widgetMain_top_image">
-                    <img src={image} className="widgetMain_top_image_one"/>
-                  </div>
-                </div>
-                <div className="widgetMain_mid">
-                  <span className="widgetMain_mid_title">Donnée en temps réel</span>
-                  <span className="widgetMain_mid_undertext text-secondary">Dernière mise à jour il y as 3 minutes</span>
-                </div>
-                <div className="widgetMain_bottom">
-                  <div className={"widgetMain_tile"}>
-                    <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
-                      <div className="widgetMain_tile_content">
-                        <span className="widgetMain_tile_content_title">1.0 PM</span>
-                        <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                      <div className="widgetMain_tile_bar">
+                        <div className="widgetMain_tile_bar_bg"></div>
+                        <div className={Math.round(mainWidgetData[1]["particules0"]) < 30 ? "widgetMain_tile_bar_full bg-danger" : Math.round(mainWidgetData[1]["particules0"]) < 60 ? "widgetMain_tile_bar_full bg-warning" : "widgetMain_tile_bar_full bg-success"} style={{height : Math.round(mainWidgetData[1]["particules0"])*100/95 + '%'}}></div>
                       </div>
                     </div>
-                    <div className="widgetMain_tile_bar">
-                      <div className="widgetMain_tile_bar_bg"></div>
-                      <div className="widgetMain_tile_bar_full"></div>
-                    </div>
-                  </div>
-                  <div className={"widgetMain_tile"}>
-                    <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
-                      <div className="widgetMain_tile_content">
-                        <span className="widgetMain_tile_content_title">1.0 PM</span>
-                        <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                    <div className={"widgetMain_tile"}>
+                      <div className="d-flex flex-row align-items-center">
+                        <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                        <div className="widgetMain_tile_content">
+                          <span className="widgetMain_tile_content_title">2.5 PM</span>
+                          <span className={Math.round(mainWidgetData[1]["particules1"]) < 100 ? "widgetMain_tile_content_data text-danger" : Math.round(mainWidgetData[1]["particules1"]) < 300 ? "widgetMain_tile_content_data text-warning" : "widgetMain_tile_content_data text-success"}>{Math.round(mainWidgetData[1]["particules1"])}</span>
+                          <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        </div>
+                      </div>
+                      <div className="widgetMain_tile_bar">
+                        <div className="widgetMain_tile_bar_bg"></div>
+                        <div className={Math.round(mainWidgetData[1]["particules1"]) < 100 ? "widgetMain_tile_bar_full bg-danger" : Math.round(mainWidgetData[1]["particules1"]) < 300 ? "widgetMain_tile_bar_full bg-warning" : "widgetMain_tile_bar_full bg-success"}style={{height : Math.round(mainWidgetData[1]["particules1"])*100/500 + '%'}}></div>
                       </div>
                     </div>
-                    <div className="widgetMain_tile_bar">
-                      <div className="widgetMain_tile_bar_bg"></div>
-                      <div className="widgetMain_tile_bar_full"></div>
-                    </div>
-                  </div>
-                  <div className={"widgetMain_tile"}>
-                    <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
-                      <div className="widgetMain_tile_content">
-                        <span className="widgetMain_tile_content_title">1.0 PM</span>
-                        <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                    <div className={"widgetMain_tile"}>
+                      <div className="d-flex flex-row align-items-center">
+                        <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
+                        <div className="widgetMain_tile_content">
+                          <span className="widgetMain_tile_content_title">10 PM</span>
+                          <span className={Math.round(mainWidgetData[1]["particules2"]) < 200 ? "widgetMain_tile_content_data text-danger" : Math.round(mainWidgetData[1]["particules2"]) < 400 ? "widgetMain_tile_content_data text-warning" : "widgetMain_tile_content_data text-success"}>{Math.round(mainWidgetData[1]["particules2"])}</span>
+                          <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                        </div>
+                      </div>
+                      <div className="widgetMain_tile_bar">
+                        <div className="widgetMain_tile_bar_bg"></div>
+                        <div className={Math.round(mainWidgetData[1]["particules2"]) < 200 ? "widgetMain_tile_bar_full bg-danger" : Math.round(mainWidgetData[1]["particules2"]) < 400 ? "widgetMain_tile_bar_full bg-warning" : "widgetMain_tile_bar_full bg-success"} style={{height : Math.round(mainWidgetData[1]["particules2"])*100/600 + '%'}}></div>
                       </div>
                     </div>
-                    <div className="widgetMain_tile_bar">
-                      <div className="widgetMain_tile_bar_bg"></div>
-                      <div className="widgetMain_tile_bar_full"></div>
-                    </div>
-                  </div>
-                  <div className={"widgetMain_tile"}>
-                    <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
-                      <div className="widgetMain_tile_content">
-                        <span className="widgetMain_tile_content_title">1.0 PM</span>
-                        <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                    <div className={"widgetMain_tile"}>
+                      <div className="d-flex flex-row align-items-center">
+                        <FontAwesomeIcon icon={"fa-solid fa-temperature-quarter"} className="widgetMain_tile_icon"/>
+                        <div className="widgetMain_tile_content">
+                          <span className="widgetMain_tile_content_title">Degrès</span>
+                          <span className={Math.round(mainWidgetData[1]["temperature"]) < 10 ? "widgetMain_tile_content_data text-danger" : Math.round(mainWidgetData[1]["temperature"]) < 20  ? "widgetMain_tile_content_data text-warning" : "widgetMain_tile_content_data text-success"}>{Math.round(mainWidgetData[1]["temperature"])}</span>
+                          <span className="widgetMain_tile_content_unite">° C</span>
+                        </div>
+                      </div>
+                      <div className="widgetMain_tile_bar">
+                        <div className="widgetMain_tile_bar_bg"></div>
+                        <div className={Math.round(mainWidgetData[1]["temperature"]) < 10 ? "widgetMain_tile_bar_full bg-danger" : Math.round(mainWidgetData[1]["temperature"]) < 20  ? "widgetMain_tile_bar_full bg-warning" : "widgetMain_tile_bar_full bg-success"} style={{height : Math.round(mainWidgetData[1]["temperature"])*100/45 + '%'}}></div>
                       </div>
                     </div>
-                    <div className="widgetMain_tile_bar">
-                      <div className="widgetMain_tile_bar_bg"></div>
-                      <div className="widgetMain_tile_bar_full"></div>
-                    </div>
-                  </div>
-                  <div className={"widgetMain_tile"}>
-                    <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
-                      <div className="widgetMain_tile_content">
-                        <span className="widgetMain_tile_content_title">1.0 PM</span>
-                        <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                    <div className={"widgetMain_tile"}>
+                      <div className="d-flex flex-row align-items-center">
+                        <FontAwesomeIcon icon={"fa-solid fa-droplet-slash"} className="widgetMain_tile_icon"/>
+                        <div className="widgetMain_tile_content">
+                          <span className="widgetMain_tile_content_title">Humidité</span>
+                          <span className={Math.round(mainWidgetData[1]["humidity"]) < 20 ? "widgetMain_tile_content_data text-danger" : Math.round(mainWidgetData[1]["humidity"]) < 60  ? "widgetMain_tile_content_data text-warning" : "widgetMain_tile_content_data text-success"}>{Math.round(mainWidgetData[1]["humidity"])}</span>
+                          <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">g</span>/m3</span>
+                        </div>
+                      </div>
+                      <div className="widgetMain_tile_bar">
+                        <div className="widgetMain_tile_bar_bg"></div>
+                        <div className={Math.round(mainWidgetData[1]["humidity"]) < 20 ? "widgetMain_tile_bar_full bg-danger" : Math.round(mainWidgetData[1]["humidity"]) < 60  ? "widgetMain_tile_bar_full bg-warning" : "widgetMain_tile_bar_full bg-success"} style={{height : Math.round(mainWidgetData[1]["humidity"])*100/90 + '%'}}></div>
                       </div>
                     </div>
-                    <div className="widgetMain_tile_bar">
-                      <div className="widgetMain_tile_bar_bg"></div>
-                      <div className="widgetMain_tile_bar_full"></div>
-                    </div>
-                  </div>
-                  <div className={"widgetMain_tile"}>
-                    <div className="d-flex flex-row align-items-center">
-                      <FontAwesomeIcon icon={"fa-solid fa-cloud"} className="widgetMain_tile_icon"/>
-                      <div className="widgetMain_tile_content">
-                        <span className="widgetMain_tile_content_title">1.0 PM</span>
-                        <span className="widgetMain_tile_content_data">60</span>
-                        <span className="widgetMain_tile_content_unite"><span className="fw-bold widgetMain_tile_content_unite_u">u</span>g/m²</span>
+                    <div className={"widgetMain_tile"}>
+                      <div className="d-flex flex-row align-items-center">
+                        <FontAwesomeIcon icon={"fa-solid fa-sun"} className="widgetMain_tile_icon"/>
+                        <div className="widgetMain_tile_content">
+                          <span className="widgetMain_tile_content_title">Lumière</span>
+                          <span className={Math.round(mainWidgetData[1]["light"]) < 20 ? "widgetMain_tile_content_data text-danger" : Math.round(mainWidgetData[1]["light"]) < 60  ? "widgetMain_tile_content_data text-warning" : "widgetMain_tile_content_data text-success"}>{Math.round(mainWidgetData[1]["light"])}</span>
+                          <span className="widgetMain_tile_content_unite">lm</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="widgetMain_tile_bar">
-                      <div className="widgetMain_tile_bar_bg"></div>
-                      <div className="widgetMain_tile_bar_full"></div>
+                      <div className="widgetMain_tile_bar">
+                        <div className="widgetMain_tile_bar_bg"></div>
+                        <div className={Math.round(mainWidgetData[1]["light"]) < 20 ? "widgetMain_tile_bar_full bg-danger" : Math.round(mainWidgetData[1]["light"]) < 60  ? "widgetMain_tile_bar_full bg-warning" : "widgetMain_tile_bar_full bg-success"} style={{height : Math.round(mainWidgetData[1]["light"])*100/90 + '%'}}></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+                : ""
             }
           </div>
           <div className="dashboard_box dashboard_box_small">
@@ -276,7 +281,7 @@ export default function Dashboard() {
                     </select>
                   </div>
                   <div className="col-8">
-                    <Select rooms={rooms}/>
+                    <select name="" id="" className="form-select"></select>
                   </div>
                 </div>
               </div>
@@ -336,14 +341,14 @@ export default function Dashboard() {
                   </select>
                 </div>
                 <div className="col-8">
-                  <Select rooms={rooms}/>
+                  <select name="" id="" className="form-select"></select>
                 </div>
               </div>
             </div>
             <LineChart/>
           </div>
           <div className="dashboard_box dashboard_box_large pt-3">
-            <BarMultipleChart/>
+            <BarMultipleChart rooms={rooms}/>
           </div>
         </div>
       </div>

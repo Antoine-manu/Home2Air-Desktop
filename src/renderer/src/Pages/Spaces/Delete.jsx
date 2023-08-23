@@ -33,12 +33,12 @@ export default function Edit(props) {
         `place/update/${props.space.id}`,
         'post',
         {
-          name: name,
+          deletedAt: new Date(),
         },
         token
       );
       if (response) {
-        props.submit(props.place)
+        props.submit()
         handleCloseModal()
       }
     } catch (error) {
@@ -48,7 +48,7 @@ export default function Edit(props) {
 
   return(
     <>
-      <button onClick={handleShowModal} className="btn btn-outline-danger ms-2">Supprimer</button>
+      <button onClick={handleShowModal} className="btn btn-outline-danger ms-2"><FontAwesomeIcon icon="fa-solid fa-trash"/></button>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Supprimer l'espace {props.space.name} ?</Modal.Title>

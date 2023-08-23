@@ -48,7 +48,6 @@ export default function EditSensor(props) {
       updatedAt: getCurrentDate(),
       active: true
     };
-    console.log('post : ', sensorData)
     const response = await fetchRoute(
       `sensor/update/${sensor.id}`,
       'post',
@@ -57,7 +56,8 @@ export default function EditSensor(props) {
     );
 
     if(response){
-      props.setName(sensorName)
+      console.log('sensor mis a jour', response)
+      props.submit(props.place)
       handleCloseModal()
     }
   };
@@ -81,9 +81,9 @@ export default function EditSensor(props) {
               <select type="email" className="form-select" id="room" onChange={(value) => {setRoom(Number(value.target.value));}} defaultValue={room}>
                 {rooms.length > 0 ?
                   rooms.map(room =>
-                    <option value={room.id} selected={room.id == sensor.id ? true : false}>{room.name}</option>
+                    <option defaultValue={room.id} selected={room.id == sensor.id ? true : false}>{room.name}</option>
                   ) :
-                    <option value="null" disabled selected >Ajoutez une pièce pour continuer</option>
+                    <option defaultValue="null" disabled selected >Ajoutez une pièce pour continuer</option>
                 }
               </select>
             </div>
@@ -103,6 +103,8 @@ export default function EditSensor(props) {
               className='form-check-input'
               id='advanced'
               readOnly
+              value={advanced}
+              onChange={(value) => {setAdvanced(value.target.checked)}}
             />
             <label htmlFor="advanced" className="form-check-label">Paramètres avancés du capteur</label>
           </div>

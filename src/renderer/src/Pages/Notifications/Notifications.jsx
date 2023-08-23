@@ -80,7 +80,9 @@ export default function Notifications() {
             }
           </Tab>
           <Tab eventKey="tab3" className="text-dark" title="Personnalisés">
-            Contenu de l'onglet 3
+            <div className="d-flex flex-row justify-content-center mt-3">
+              <span className="text-secondary">Aucune notification personnalisés</span>
+            </div>
           </Tab>
         </Tabs>
       </div>

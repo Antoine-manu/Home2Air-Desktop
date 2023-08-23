@@ -2,7 +2,7 @@
 
     height: 100vh;
     max-height: 100vh;
-    background-color: $lightgrey;
+    background-color: #000329;
     width: 250px;
     display: flex;
     flex-direction: column;
@@ -25,7 +25,7 @@
          &>a{
            text-decoration: none;
            font-weight: bold;
-           color: black;
+           color: white;
            padding: 16px;
            display: block;
            width: 180px;
@@ -74,5 +74,5 @@
 }
 
 .active{
-    color: $blue !important;
+    color: #036DDF !important;
 }

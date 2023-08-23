@@ -20,7 +20,7 @@ export default function Spaces() {
     localStorage.getItem('userId') ? localStorage.getItem('userId') : ''
   );
 
-  const getPlacesList = async () => {
+  const getPlacesList = async (defaultId = null) => {
     const placeList = await fetchRoute(
       'place/find-user-place',
       'post',
@@ -31,7 +31,16 @@ export default function Spaces() {
     );
     setPlaces(placeList);
     if (placeList.length > 0) {
-      setDefault(placeList[0]);
+      if(defaultId == null){
+        setDefault(placeList[0]);
+      } else {
+        placeList.map(place => {
+            if (place.id == defaultId){
+              setDefault(place);
+            }
+          }
+        )
+      }
     }
   };
 
@@ -72,15 +81,16 @@ export default function Spaces() {
           <div className="mt-3 mb-3 d-flex flex-row justify-content-between align-items-center">
             <span >Liste de vos pièces dans l'espace</span>
             <div>
-              {places.length > 0 ? <RoomAdd default={_default} places={places} setDefault={setDefault}/>  : ""}
-              {places.length > 0 ?<Edit space={_default} submit={setDefault}/> : ""}
-              {places.length > 0 ?<Delete space={_default} submit={setDefault}/> : ""}
+              {places.length > 0 ? <RoomAdd default={_default} places={places} submit={searchRooms}/>  : ""}
+              <button className="btn btn-secondary me-2"><FontAwesomeIcon icon="fa-solid fa-share-nodes"/></button>
+              {places.length > 0 ?<Edit space={_default} submit={getPlacesList}/> : ""}
+              {places.length > 0 ?<Delete space={_default} submit={getPlacesList}/> : ""}
             </div>
           </div>
           <div className="d-flex flex-row flex-wrap">
             {rooms.length > 0 ?
               rooms.map(room =>
-                <div className="singleSpace bg-light me-4" key={'room'+room.id}>
+                <div className="singleSpace bg-light me-4 mt-3" key={'room'+room.id}>
                   <span>{room.name}</span>
                   <div>
                     <RoomEdit room={room} submit={searchRooms}/>

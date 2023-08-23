@@ -1,3 +1,3 @@
-const param = 'http://192.168.1.48:6500/api/v1/';
+const param = 'http://10.48.0.187:6500/api/v1/';
 
 export default param;
