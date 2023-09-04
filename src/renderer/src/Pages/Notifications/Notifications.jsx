@@ -16,19 +16,19 @@ export default function Notifications() {
 
   const getNotifRecent = async () => {
     const notif = await fetchRoute(
-      "/notifications/find-recent",
+      "notifications/find-recent",
       "post",
       {
-        user_id: uid
+        user_id: uid,
       },
       token
     );
-    setNotificationRecent(notif);
+    setNotificationRecent(notif)
   };
 
   const getNotifPassed = async () => {
     const notif = await fetchRoute(
-      "/notifications/find-passed",
+      "notifications/find-passed",
       "post",
       {
         user_id: uid
@@ -39,16 +39,17 @@ export default function Notifications() {
   };
 
   useEffect(() => {
-    console.log(uid)
-    getNotifPassed
-    getNotifRecent
-    console.log(notificationRecent, notificationPassed)
+    getNotifRecent()
   }, [])
+
+  useEffect(() => {
+    console.log('here' + notificationRecent)
+  }, [notificationRecent])
 
     return(
       <div>
         <Tabs defaultActiveKey="tab1" id="my-tabs">
-          <Tab eventKey="tab1" className="text-dark" title="Recentes">
+          <Tab eventKey="tab1" className="text-dark" title="Recentes" onClick={() => getNotifRecent()}>
             {notificationRecent.length>0 ?
               notificationRecent.map(notif =>
                 <div className="notif">
@@ -64,7 +65,7 @@ export default function Notifications() {
             }
 
           </Tab>
-          <Tab eventKey="tab2" className="text-dark" title="Historique">
+          <Tab eventKey="tab2" className="text-dark" title="Historique" onClick={() => getNotifPassed()}>
             {notificationPassed.length>0 ?
               notificationPassed.map(notif =>
                 <div className="notif passed">

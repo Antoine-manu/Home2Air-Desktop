@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import image from '../../assets/img/dashboardImage.svg'
 import { Line } from 'react-chartjs-2';
-import LineChart from "../../Components/LineChart";
+import Weather from "../../Components/Weather";
 import Clock from "../../Components/Clock";
 import Timer from "../../Components/Timer";
 import CustomSVG from "../../Components/ImageDesktop";
@@ -10,6 +10,7 @@ import React, {useEffect, useState} from 'react';
 import { Button, Modal, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {fetchRoute} from "../../Utils/auth";
+import axios from 'axios';
 export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
   const [showConfigModal, setShowConfigModal] = useState(false);
@@ -19,6 +20,12 @@ export default function Dashboard() {
   const [sensorConfig, setSensorConfig] = useState();
   const [rooms, setRooms] = useState([]);
   const [_default, setDefault] = useState([]);
+  const [aqi, setAqi] = useState(null);
+  const [weather, setWeather] = useState(null);
+
+  const apiKey = '2fa7a66f082845d491c121124232608'; // Remplacez par votre propre clé API
+  const city = 'Amiens';
+  const url = `http://api.weatherapi.com/v1/current.json?key=2fa7a66f082845d491c121124232608&q=Amiens&aqi=no`;
 
   const [token, setToken] = useState(
     localStorage.getItem('token') ? localStorage.getItem('token') : ''
@@ -115,6 +122,17 @@ export default function Dashboard() {
 
   useEffect(() => {
     getPlacesList();
+    axios.get(url)
+      .then(response => {
+        const currentAqi = response.data.list[0].main.aqi;
+        setAqi(currentAqi);
+        setWeather(response.data)
+        console.log(weather)
+      })
+      .catch(error => {
+        console.error('Error fetching AQI:', error);
+      });
+    console.log(aqi)
   }, []);
 
   useEffect(() => {
@@ -345,7 +363,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <LineChart/>
+            {weather != null ?
+              <img src={weather.current.condition.icon} alt=""/>
+            : ""}
           </div>
           <div className="dashboard_box dashboard_box_large pt-3">
             <BarMultipleChart rooms={rooms}/>

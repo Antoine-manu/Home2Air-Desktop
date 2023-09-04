@@ -4,6 +4,7 @@ import RoomAdd from './RoomAdd'
 import RoomEdit from './RoomEdit'
 import RoomDelete from './RoomDelete'
 import Edit from './Edit'
+import Share from './Share'
 import Create from './Create'
 import Delete from './Delete'
 import React, {useEffect, useState} from "react";
@@ -82,7 +83,7 @@ export default function Spaces() {
             <span >Liste de vos pièces dans l'espace</span>
             <div>
               {places.length > 0 ? <RoomAdd default={_default} places={places} submit={searchRooms}/>  : ""}
-              <button className="btn btn-secondary me-2"><FontAwesomeIcon icon="fa-solid fa-share-nodes"/></button>
+              {places.length > 0 ? <Share default={_default} space={places} submit={searchRooms}/>  : ""}
               {places.length > 0 ?<Edit space={_default} submit={getPlacesList}/> : ""}
               {places.length > 0 ?<Delete space={_default} submit={getPlacesList}/> : ""}
             </div>

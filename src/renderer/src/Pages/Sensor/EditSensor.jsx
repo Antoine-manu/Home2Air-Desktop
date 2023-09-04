@@ -81,7 +81,7 @@ export default function EditSensor(props) {
               <select type="email" className="form-select" id="room" onChange={(value) => {setRoom(Number(value.target.value));}} defaultValue={room}>
                 {rooms.length > 0 ?
                   rooms.map(room =>
-                    <option defaultValue={room.id} selected={room.id == sensor.id ? true : false}>{room.name}</option>
+                    <option key={room.id} defaultValue={room.id} selected={room.id == sensor.id ? true : false}>{room.name}</option>
                   ) :
                     <option defaultValue="null" disabled selected >Ajoutez une pièce pour continuer</option>
                 }

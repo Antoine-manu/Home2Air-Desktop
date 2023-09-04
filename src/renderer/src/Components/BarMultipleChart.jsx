@@ -87,31 +87,31 @@ const MyLineChart = (props) => {
         <span>Comparatif d'AQI</span>
         <div className="flex-row d-flex" style={style.buttons}>
           <select className="btn btn-warning me-2 col-3" id="firstBar" style={style.select} onChange={(e) => {fetchProbeDatas(e.target.value, setFirstDatas)}}>
-            <option disabled selected={true} value={null}>Capteur</option>
+            <option disabled selected={true} defaultValue={null}>Capteur</option>
             {props.rooms.map(room =>
               <optgroup label={room.name} key={'selectRoom' + room.id}>
                 {room.Sensor.map(sensor =>
-                  <option key={'selectSensor' + sensor.id} value={sensor.address}>{sensor.name}</option>
+                  <option key={'selectSensor' + sensor.id} defaultValue={sensor.address}>{sensor.name}</option>
                 )}
               </optgroup>
             )}
           </select>
           <select className="btn btn-danger me-2 col-3" style={style.select} id="secondBar" onChange={(e) => {fetchProbeDatas(e.target.value, setSecondDatas)}}>
-            <option disabled selected={true} value={null}>Capteur</option>
+            <option disabled selected={true} defaultValue={null}>Capteur</option>
             {props.rooms.map(room =>
               <optgroup label={room.name} key={'selectRoom' + room.id}>
                 {room.Sensor.map(sensor =>
-                  <option key={'selectSensor' + sensor.id} value={sensor.address}>{sensor.name}</option>
+                  <option key={'selectSensor' + sensor.id} defaultValue={sensor.address}>{sensor.name}</option>
                 )}
               </optgroup>
             )}
           </select>
           <select className="btn btn-primary col-3" style={style.select} id="thirdBar" onChange={(e) => {fetchProbeDatas(e.target.value, setThirdDatas)}}>
-            <option disabled selected={true} value={null}>Capteur</option>
+            <option disabled selected={true} defaultValue={null}>Capteur</option>
             {props.rooms.map(room =>
               <optgroup label={room.name} key={'selectRoom' + room.id}>
                 {room.Sensor.map(sensor =>
-                  <option key={'selectSensor' + sensor.id} value={sensor.address}>{sensor.name}</option>
+                  <option key={'selectSensor' + sensor.id} defaultValue={sensor.address}>{sensor.name}</option>
                 )}
               </optgroup>
             )}

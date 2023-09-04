@@ -57,7 +57,7 @@ export default function RoomAdd(props) {
           <label htmlFor="selectSpace" className="form-label">Selectionnez un espace</label>
           <select name="selectSpace" id="selectSpace" className="form-select mb-3" onChange={(value) => {setPlaceId(parseInt(value.target.value))} }>
             {props.places.map(place =>
-              <option value={place.id} selected={place.id == props.default.id ? true : false}>{place.name}</option>
+              <option value={place.id} key={place.id} selected={place.id == props.default.id ? true : false}>{place.name}</option>
             )}
           </select>
           <label htmlFor="nameRoom" className="form-label">Nom de la pièce</label>
