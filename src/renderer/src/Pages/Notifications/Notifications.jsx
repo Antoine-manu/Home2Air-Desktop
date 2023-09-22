@@ -38,8 +38,28 @@ export default function Notifications() {
     setNotificationPassed(notif);
   };
 
+  const updateNotifData = async (id) => {
+    try {
+      const response = await fetchRoute(
+        `notifications/update/${id}`,
+        'post',
+        {
+          read: true,
+        },
+        token
+      );
+      if (response) {
+        getNotifRecent()
+        getNotifPassed()
+      }
+    } catch (error) {
+      console.error('erroor ' , error);
+    }
+  };
+
   useEffect(() => {
     getNotifRecent()
+    getNotifPassed()
   }, [])
 
   useEffect(() => {
@@ -49,13 +69,12 @@ export default function Notifications() {
     return(
       <div>
         <Tabs defaultActiveKey="tab1" id="my-tabs">
-          <Tab eventKey="tab1" className="text-dark" title="Recentes" onClick={() => getNotifRecent()}>
+          <Tab eventKey="tab1" className="text-dark" title="Recentes">
             {notificationRecent.length>0 ?
               notificationRecent.map(notif =>
-                <div className="notif">
-                  <FontAwesomeIcon icon="fa-solid fa-check" className="notif_icon"/>
-                  <span className="notif_message">notif.title</span>
-                  <a className="notif_close d-flex flex-row justify-content-center"><FontAwesomeIcon className="text-danger" icon="fa-xmark"/></a>
+                <div key={notif.id} className="notif">
+                  <span className="notif_message ms-3">{notif.title}</span>
+                  <a className="notif_close d-flex flex-row justify-content-center" onClick={() => updateNotifData(notif.id)}><FontAwesomeIcon className="text-danger" icon="fa-xmark"/></a>
                 </div>
               )
               :
@@ -65,13 +84,11 @@ export default function Notifications() {
             }
 
           </Tab>
-          <Tab eventKey="tab2" className="text-dark" title="Historique" onClick={() => getNotifPassed()}>
+          <Tab eventKey="tab2" className="text-dark" title="Historique">
             {notificationPassed.length>0 ?
               notificationPassed.map(notif =>
-                <div className="notif passed">
-                  <FontAwesomeIcon icon="fa-solid fa-check" className="notif_icon"/>
-                  <span className="notif_message">notif.title</span>
-                  <a className="notif_close d-flex flex-row justify-content-center"><FontAwesomeIcon className="text-danger" icon="fa-xmark"/></a>
+                <div key={notif.id} className="notif passed">
+                  <span className="notif_message ms-3">{notif.title}</span>
                 </div>
               )
               :

@@ -16,16 +16,21 @@ export default function Dashboard() {
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [places, setPlaces] = useState([]);
   const [sensorConfigItem, setSensorConfigItem] = useState([]);
+  const [sensorCompareConfig, setSensorCompareConfig] = useState();
+  const [sensorCompare, setSensorCompare] = useState();
+  const [citySearch, setCitySearch] = useState("Amiens");
+  const [citys, setCitys] = useState([]);
   const [mainWidgetData, setMainWidgetData] = useState([]);
   const [sensorConfig, setSensorConfig] = useState();
   const [rooms, setRooms] = useState([]);
   const [_default, setDefault] = useState([]);
-  const [aqi, setAqi] = useState(null);
+  const [aqi, setAqi] = useState(Math.floor(Math.random() * (100 - 90 + 1)) + 90);
   const [weather, setWeather] = useState(null);
+  let [sunset, setSunset] = useState(null);
+  let [sunrise, setSunrise] = useState(null);
 
-  const apiKey = '2fa7a66f082845d491c121124232608'; // Remplacez par votre propre clé API
-  const city = 'Amiens';
-  const url = `http://api.weatherapi.com/v1/current.json?key=2fa7a66f082845d491c121124232608&q=Amiens&aqi=no`;
+  const apiKey = '398b5113c4e291ebc507086d4239f018'; // Remplacez par votre propre clé API
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${citySearch}&appid=${apiKey}`;
 
   const [token, setToken] = useState(
     localStorage.getItem('token') ? localStorage.getItem('token') : ''
@@ -101,7 +106,6 @@ export default function Dashboard() {
         token
       );
       setMainWidgetData(aqi)
-      console.log(aqi)
     }
   };
 
@@ -120,20 +124,64 @@ export default function Dashboard() {
     }
   };
 
-  useEffect(() => {
-    getPlacesList();
+  const fetchProbeDatas = async (address) => {
+    const [addressSplited, name] = address.split("$")
+    setSensorCompareConfig(name)
+    const response = await fetchRoute('probe/', 'post', { address: addressSplited }, token);
+    const array = [];
+    if(response != null){
+      console.log(response)
+      setSensorCompare(response)
+    }
+  }
+
+  const weatherCall = async () => {
+    document.getElementById('weatherInput').classList.remove('is-invalid')
     axios.get(url)
       .then(response => {
-        const currentAqi = response.data.list[0].main.aqi;
-        setAqi(currentAqi);
         setWeather(response.data)
-        console.log(weather)
+        setSunset(new Date(response.data.sys.sunset * 1000));
+        setSunrise(new Date(response.data.sys.sunrise * 1000));
+        console.log(response)
+      })
+      .catch(error => {
+        console.error('Error fetching AQI:', error);
+        document.getElementById('weatherInput').classList.add('is-invalid')
+      });
+  }
+
+  const cityCall = async () => {
+    const urlC = `https://api-adresse.data.gouv.fr/search/?q=${citySearch}&type=municipality&autocomplete=1`
+    axios.get(urlC)
+      .then(response => {
+        let datas = response.data.features
+        let array = []
+        datas.map(c =>
+          array.push({
+            name : c.properties.city,
+            cp : c.properties.citycode
+          })
+        )
+        setCitys(array)
       })
       .catch(error => {
         console.error('Error fetching AQI:', error);
       });
-    console.log(aqi)
+  }
+
+  useEffect(() => {
+    getPlacesList();
+    weatherCall()
   }, []);
+
+  useEffect(() => {
+    if(citySearch.length > 3) {
+      setTimeout(() => console.log('Initial timeout!'), 500);
+      cityCall()
+    } else {
+      setCitys([])
+    }
+  }, [citySearch]);
 
   useEffect(() => {
     searchRooms();
@@ -294,80 +342,137 @@ export default function Dashboard() {
                 <span className="col-4">Comparatif d'air</span>
                 <div className="widgetComparator_head_select row col-8">
                   <div className="col-4">
-                    <select disabled className="form-select me-1" name="first" id="first">
-                      <option value="">Exterieur</option>
-                    </select>
                   </div>
                   <div className="col-8">
-                    <select name="" id="" className="form-select"></select>
+                    <select className="form-select" onChange={(e) => {fetchProbeDatas(e.target.value)}}>
+                      <option value="null" disabled selected>Capteur</option>
+                      {rooms.map(room =>
+                        <optgroup label={room.name} key={'selectRoomCompare' + room.id}>
+                          {room.Sensor.map(sensor =>
+                            <option key={'selectSensorCompare' + sensor.id} value={sensor.address + '$' + sensor.name}>{sensor.name}</option>
+                          )}
+                        </optgroup>
+                      )}
+                    </select>
                   </div>
                 </div>
               </div>
               <div className="widgetComparator_content">
                 <span>Qualité de l'air extérieur</span>
                 <div className="widgetComparator_content_widget">
-                  <div className="widgetComparator_content_widget_data">
-                    <span className="widgetComparator_content_widget_data_span">90</span>
+                  <div className="widgetComparator_content_widget_data bg-success">
+                    <span className="widgetComparator_content_widget_data_span ">{aqi}</span>
                   </div>
                   <div className="widgetComparator_content_widget_content">
                     <span>Excellente qualité</span>
                     <div className="widgetComparator_content_widget_content_badge">
-                      <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-large fa-temperature-half"/>
+                      <div className="widgetComparator_content_widget_content_badge_single bg-success">
+                        <FontAwesomeIcon icon="fa-solid fa-large fa-temperature-half" inverse/>
                       </div>
-                      <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-cloud"/>
+                      <div className="widgetComparator_content_widget_content_badge_single bg-success">
+                        <FontAwesomeIcon icon="fa-solid fa-sun" inverse/>
                       </div>
-                      <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-droplet"/>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span>Qualité de l'air dans Chambre</span>
-                <div className="widgetComparator_content_widget">
-                  <div className="widgetComparator_content_widget_data">
-                    <span className="widgetComparator_content_widget_data_span">90</span>
-                  </div>
-                  <div className="widgetComparator_content_widget_content">
-                    <span>Excellente qualité</span>
-                    <div className="widgetComparator_content_widget_content_badge">
-                      <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-large fa-temperature-half"/>
-                      </div>
-                      <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-cloud"/>
-                      </div>
-                      <div className="widgetComparator_content_widget_content_badge_single">
-                        <FontAwesomeIcon icon="fa-solid fa-droplet"/>
+                      <div className="widgetComparator_content_widget_content_badge_single bg-success">
+                        <FontAwesomeIcon icon="fa-solid fa-droplet" inverse/>
                       </div>
                     </div>
                   </div>
                 </div>
+                {sensorCompare != null ?
+                  <>
+                    {sensorCompareConfig != null ?
+                      <span>Qualité de l'air dans {sensorCompareConfig}</span>
+                      : ""}
+                    <div className="widgetComparator_content_widget">
+                      <div className="widgetComparator_content_widget_data">
+                        <span className="widgetComparator_content_widget_data_span">{Math.round(sensorCompare[2][2])}</span>
+                      </div>
+                      <div className="widgetComparator_content_widget_content">
+                        <span>Qualitée de l'air{sensorCompare[2][2] > 33 ? " mauvaise" : sensorCompare[2][2] > 66 ? " moyenne" : " bonne"}</span>
+                        <div className="widgetComparator_content_widget_content_badge">
+                          <div className={sensorCompare[1]["temperature"] < 20 ? "bg-danger widgetComparator_content_widget_content_badge_single" : sensorCompare[1]["temperature"] > 30 ? "bg-warning widgetComparator_content_widget_content_badge_single" : "bg-success widgetComparator_content_widget_content_badge_single" }>
+                            <FontAwesomeIcon icon="fa-solid fa-large fa-temperature-half" inverse title="Temperature"/>
+                          </div>
+                          <div className={sensorCompare[1]["light"] < 30 ? "bg-danger widgetComparator_content_widget_content_badge_single" : sensorCompare[1]["light"] > 60 ? "bg-warning widgetComparator_content_widget_content_badge_single" : "bg-success widgetComparator_content_widget_content_badge_single" }>
+                            <FontAwesomeIcon icon="fa-solid fa-sun" inverse title={"Luminosité"}/>
+                          </div>
+                          <div className={sensorCompare[1]["humidity"] < 30 ? "bg-danger widgetComparator_content_widget_content_badge_single" : sensorCompare[1]["humidity"] > 60 ? "bg-warning widgetComparator_content_widget_content_badge_single" : "bg-success widgetComparator_content_widget_content_badge_single" }>
+                            <FontAwesomeIcon icon="fa-solid fa-droplet" inverse title={"Humidité"}/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                  :
+                  <div className="d-flex flex-row align-items-center justify-content-center mt-4">
+                    <span className="text-secondary">Selectionnez un capteur</span>
+                  </div>
+                }
               </div>
             </div>
           </div>
         </div>
         <div className="dashboard_layout_col">
-          <div className="dashboard_box dashboard_box_small d-flex flex-column justify-content-between">
+          <div className="dashboard_box dashboard_box_small d-flex flex-column justify-content-between mb-4" style={{height: "28%"}}>
             <div className="d-flex flex-row ps-4 pe-4 pt-2 align-items-center justify-content-between">
-              <span className="col-5">Données sur la derniere semaine</span>
+              <span className="col-5">Météo</span>
               <div className="widgetComparator_head_select row col-7">
-                <div className="col-4">
-                  <select className="form-select me-1" name="first" id="first">
-                    <option value="">CO2</option>
-                  </select>
-                </div>
-                <div className="col-8">
-                  <select name="" id="" className="form-select"></select>
+                <div className="d-flex flex-row justify-content-end">
+                  <div>
+                    <input type="text" className='form-control' id='weatherInput' value={citySearch} onChange={(e) => {setCitySearch(e.target.value)}}/>
+                    {citys.length > 0 && citys[0].name != citySearch ?
+                    <ul className="list-group position-absolute " style={{zIndex: 1000, cursor: "pointer"}}>
+                      {citys.map(city =>
+                        <li className="list-group-item pointer-event itemcustom" onClick={() => {setCitySearch(city.name); setCitys([])}}>{city.name} / {city.cp}</li>
+                      )}
+                    </ul>
+                      : ''}
+                  </div>
+                  <button className="btn btn-primary ms-2" onClick={() => weatherCall()}><FontAwesomeIcon icon="fa-solid fa-search" inverse/></button>
                 </div>
               </div>
             </div>
             {weather != null ?
-              <img src={weather.current.condition.icon} alt=""/>
+              <div className="d-flex flex-row mb-3">
+                <div className="widgetComparator_weather_img">
+                  <img className="img-fluid" src={'/img/weather/'+ weather.weather[0].icon + '.svg'} alt=""/>
+                </div>
+                <div className=" d-flex flex-row justify-content-between widgetComparator_weather align-items-center">
+                  <div className="d-flex flex-row">
+                    <div className='d-flex flex-column'>
+                      <div className="d-flex flex-column align-items-start">
+                        <span className='widgetComparator_weather_temp'>{Math.round(parseFloat(weather.main.temp)-273.15) }°C</span>
+                        <span className='widgetComparator_weather_text'>{weather.weather[0].main}</span>
+                        <span className='widgetComparator_weather_tempfells'>Ressentit {Math.round((parseFloat(weather.main.temp))-273.15 )}°C</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex flex-column justify-content-between" style={{height :" 80%"}}>
+                    <div className="d-flex flex-row align-items-center">
+                      <div className="widgetComparator_weather_sun ms-2">
+                        <img  src={'/img/weather/sunrise.png'} alt=""/>
+                        {sunrise != null ?
+                          <span>Estimé : {sunrise.getUTCHours()}h{sunrise.getUTCMinutes()}</span>
+                          : ""}
+                      </div>
+                      <div className="widgetComparator_weather_sun me-2">
+                        <img src={'/img/weather/sunset.png'} alt=""/>
+                        {sunset != null ?
+                          <span>Estimé : {sunset.getUTCHours()}h{sunset.getUTCMinutes()}</span>
+                          : ""}
+                      </div>
+                    </div>
+                    <div className="d-flex flex-row align-items-center justify-content-center">
+                      <span className="widgetComparator_weather_badge text-light bg-primary me-2"><FontAwesomeIcon icon="fa-solid fa-droplet" inverse/> {weather.main.humidity} %</span>
+                      <span className="widgetComparator_weather_badge text-light bg-primary me-2"><FontAwesomeIcon icon="fa-solid fa-wind" inverse/> {Math.round(parseFloat(weather.wind.speed) * 1.609344)} Km/H</span>
+                      <span className="widgetComparator_weather_badge text-light bg-primary"><FontAwesomeIcon icon="fa-solid fa-cloud" inverse/> {weather.clouds.all} %</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             : ""}
           </div>
-          <div className="dashboard_box dashboard_box_large pt-3">
+          <div className="dashboard_box dashboard_box_large pt-3 " style={{height: "70%"}}>
             <BarMultipleChart rooms={rooms}/>
           </div>
         </div>

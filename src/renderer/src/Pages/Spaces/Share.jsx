@@ -46,7 +46,19 @@ export default function Share(props) {
   }
 
   const userList = async () => {
-
+    const jsonData = {
+      name : search,
+      place_id : _default.id
+    };
+    const response = await fetchRoute(
+      'user/find-by',
+      'POST',
+      jsonData,
+      token
+    );
+    if(response){
+      setUsers(response)
+    }
   }
 
   const inviteList = async () => {
@@ -79,14 +91,14 @@ export default function Share(props) {
   return(
     <>
       <button className="btn btn-outline-warning me-2" onClick={handleShowModal}><FontAwesomeIcon icon="fa-solid fa-share-nodes text-light"/></button>
-      <Modal show={showModal} size={"l"} onHide={handleCloseModal}>
+      <Modal show={showModal} size={"l"} onHide={handleCloseModal} >
         <Modal.Header closeButton>
           <Modal.Title>Editer l'espace {props.default.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <label className="form-label" htmlFor="">Partager l'espace</label>
           <input type="text" className="form-control" onChange={(e) => {setSearch(e.target.value)}}/>
-          <div>
+          <div style={{maxHeight: '60vh', overflow: 'auto'}}>
             {users.length > 0 ?
               <ul className="list-group mt-4">
                 {users.map(user =>

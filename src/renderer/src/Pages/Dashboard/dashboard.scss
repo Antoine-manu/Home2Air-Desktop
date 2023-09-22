@@ -213,6 +213,7 @@
 
 .widgetComparator{
   height: 100%;
+  align-items: center;
   &_head{
     display: flex;
     flex-direction: row;
@@ -220,6 +221,48 @@
     margin-top: 8px;
     margin-bottom: 8px;
   }
+
+  &_weather{
+    width: 70%;
+    align-items: center;
+    position: relative;
+    &_text{
+      font-size: 24px;
+      font-weight: bold;
+    }
+    &_img{
+      width: 30%;
+
+      &>img{
+        width: 100%;
+      }
+    }
+    &_city{
+      font-size: 16px;
+    }
+    &_temp{
+      font-size: 58px;
+    }
+    &_tempfells{
+      font-size: 16px;
+    }
+    &_badge{
+      padding: 6px;
+      border-radius: 24px;
+    }
+    &_sun{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+
+      &>img{
+        width: 40%;
+      }
+    }
+
+  }
+
   &_content{
     align-items: flex-start;
     padding: 26px;
@@ -306,6 +349,10 @@
 }
 .text-success{
   color: #00A660 !important;
+}
+
+.itemcustom:hover{
+  background-color: lightgrey;
 }
 
 @media (max-width: 1000px) {
@@ -420,6 +467,33 @@
       margin-bottom: 8px;
 
     }
+
+    &_weather{
+      width: 70%;
+      &_text{
+        font-size: 16px;
+      }
+      &_img{
+        width: 30%;
+      }
+      &_city{
+        font-size: 14px;
+      }
+      &_temp{
+        font-size: 24px;
+      }
+      &_tempfells{
+        font-size: 14px;
+      }
+      &_badge{
+        display: none;
+      }
+
+        &>img{
+          width: 40%;
+        }
+      }
+
     &_content{
       padding: 8px;
       height: 100%;
